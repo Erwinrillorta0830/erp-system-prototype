@@ -1,7 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useCustomers } from "../hooks/use-crm";
+import { cn } from "@/lib/utils";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter, 
+  DialogTrigger,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 import { 
   Card, CardContent, CardHeader, CardTitle, CardDescription 
 } from "@/components/ui/card";
@@ -25,6 +42,30 @@ import { Separator } from "@/components/ui/separator";
 
 const CustomerList: React.FC = () => {
   const { customers } = useCustomers();
+  const [isAddCustomerOpen, setIsAddCustomerOpen] = useState(false);
+
+  // Form State
+  const [newCustomer, setNewCustomer] = useState<{
+    businessName: string;
+    customerCode: string;
+    customerType: string;
+    contactNo: string;
+    email: string;
+    address: string;
+    city: string;
+    creditLimit: string;
+    assignedSalesRep: string;
+  }>({
+    businessName: "",
+    customerCode: "",
+    customerType: "WHOLESALE",
+    contactNo: "",
+    email: "",
+    address: "",
+    city: "",
+    creditLimit: "50000",
+    assignedSalesRep: "Current User",
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -55,9 +96,119 @@ const CustomerList: React.FC = () => {
           <Button variant="outline" className="h-12 border-primary/20 hover:bg-primary/5 font-bold rounded-xl px-6">
             Export CRM Data
           </Button>
-          <Button className="h-12 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30 font-black rounded-xl px-8">
-            <UserPlus className="mr-2 h-5 w-5" /> New Customer
-          </Button>
+          <Dialog open={isAddCustomerOpen} onOpenChange={setIsAddCustomerOpen}>
+            <DialogTrigger render={
+              <Button className="h-12 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30 font-black rounded-xl px-8">
+                <UserPlus className="mr-2 h-5 w-5" /> New Customer
+              </Button>
+            } />
+            <DialogContent className="sm:max-w-[650px] border-primary/20 bg-card/95 backdrop-blur-xl rounded-[2.5rem] p-0 overflow-hidden border-none shadow-2xl shadow-primary/20">
+              <div className="bg-primary p-8 text-primary-foreground relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
+                <div className="relative z-10">
+                  <DialogTitle className="text-3xl font-black tracking-tight flex items-center gap-3">
+                    <UserPlus className="h-8 w-8" />
+                    Onboard Customer
+                  </DialogTitle>
+                  <p className="mt-2 font-bold text-primary-foreground/80">Register a new business account or retail partner.</p>
+                </div>
+              </div>
+
+              <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Entity / Business Name</label>
+                    <Input 
+                      placeholder="e.g. SpeedForce Motor Parts"
+                      value={newCustomer.businessName}
+                      onChange={(e) => setNewCustomer(prev => ({ ...prev, businessName: e.target.value }))}
+                      className="h-12 rounded-2xl bg-muted/50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Customer Identifier</label>
+                    <Input 
+                      placeholder="e.g. CUST-2024-001"
+                      value={newCustomer.customerCode}
+                      onChange={(e) => setNewCustomer(prev => ({ ...prev, customerCode: e.target.value }))}
+                      className="h-12 rounded-2xl bg-muted/50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 font-bold font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Trade Classification</label>
+                    <Select 
+                      value={newCustomer.customerType}
+                      onValueChange={(val) => setNewCustomer(prev => ({ ...prev, customerType: val ?? "" }))}
+                    >
+                      <SelectTrigger className="h-12 rounded-2xl bg-muted/50 border-none focus:ring-2 focus:ring-primary/20">
+                        <SelectValue placeholder="Account Type" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-2xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                        <SelectItem value="WHOLESALE" className="font-bold text-xs">Wholesale Partner</SelectItem>
+                        <SelectItem value="RETAILER" className="font-bold text-xs">Retail Store</SelectItem>
+                        <SelectItem value="WALK_IN" className="font-bold text-xs">Walk-in Client</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Credit Line (PHP)</label>
+                    <Input 
+                      type="number"
+                      value={newCustomer.creditLimit}
+                      onChange={(e) => setNewCustomer(prev => ({ ...prev, creditLimit: e.target.value }))}
+                      className="h-12 rounded-2xl bg-muted/50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 font-black"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Contact Number</label>
+                    <Input 
+                      placeholder="+63 9xx xxxx xxx"
+                      value={newCustomer.contactNo}
+                      onChange={(e) => setNewCustomer(prev => ({ ...prev, contactNo: e.target.value }))}
+                      className="h-12 rounded-2xl bg-muted/50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email Address</label>
+                    <Input 
+                      placeholder="office@business.com"
+                      value={newCustomer.email}
+                      onChange={(e) => setNewCustomer(prev => ({ ...prev, email: e.target.value }))}
+                      className="h-12 rounded-2xl bg-muted/50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Principal Business Address</label>
+                  <Input 
+                    placeholder="Unit, Building, Street Name..."
+                    value={newCustomer.address}
+                    onChange={(e) => setNewCustomer(prev => ({ ...prev, address: e.target.value }))}
+                    className="h-12 rounded-2xl bg-muted/50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 font-bold text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="p-8 pt-0">
+                <DialogFooter className="gap-3">
+                  <Button variant="ghost" className="h-12 font-black rounded-2xl px-6" onClick={() => setIsAddCustomerOpen(false)}>Discard</Button>
+                  <Button 
+                    className="h-12 bg-primary hover:bg-primary/90 font-black rounded-2xl px-10 shadow-xl shadow-primary/20 active:scale-95 transition-all"
+                    onClick={() => setIsAddCustomerOpen(false)}
+                  >
+                    Confirm Registration
+                  </Button>
+                </DialogFooter>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

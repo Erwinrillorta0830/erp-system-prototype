@@ -7,8 +7,19 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, Plus, ArrowRight, FileText, CheckCircle2, XCircle, Clock, RefreshCw } from "lucide-react";
+import { Search, Filter, Plus, ArrowRight, FileText, CheckCircle2, XCircle, Clock, RefreshCw, ClipboardList, Printer } from "lucide-react";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter,
+  DialogTrigger,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SalesQuote } from "@/modules/sales/types";
+import DocumentDetailModal, { printDocument } from "@/modules/sales/components/DocumentDetailModal";
 
 const STATUS_STYLES: Record<SalesQuote["status"], string> = {
   DRAFT:     "bg-zinc-100   text-zinc-600   border-zinc-200",
@@ -25,6 +36,19 @@ export default function QuotationList() {
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
   const [converting, setConverting] = useState<string | null>(null);
   const [lastConverted, setLastConverted] = useState<string | null>(null);
+  const [isNewQuoteOpen, setIsNewQuoteOpen] = useState(false);
+  const [selectedQuote, setSelectedQuote] = useState<SalesQuote | null>(null);
+
+  // Form State
+  const [newQuote, setNewQuote] = useState<{
+    customerId: string;
+    validUntil: string;
+    assignedSalesRep: string;
+  }>({
+    customerId: "",
+    validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    assignedSalesRep: "Current User",
+  });
 
   const getCustomer = (id: string) => customers.find(c => c.id === id);
 
@@ -60,9 +84,88 @@ export default function QuotationList() {
           <h1 className="text-3xl font-black tracking-tight">Quotations</h1>
           <p className="text-muted-foreground text-sm mt-0.5">Pre-sale proposals for wholesale and repeat accounts.</p>
         </div>
-        <Button className="bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20 font-black rounded-xl px-6">
-          <Plus className="mr-2 h-4 w-4" /> New Quotation
-        </Button>
+        <Dialog open={isNewQuoteOpen} onOpenChange={setIsNewQuoteOpen}>
+          <DialogTrigger render={
+            <Button className="bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20 font-black rounded-xl px-6">
+              <Plus className="mr-2 h-4 w-4" /> New Quotation
+            </Button>
+          } />
+          <DialogContent className="sm:max-w-[550px] border-emerald-500/20 bg-card/95 backdrop-blur-xl rounded-[2rem]">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black tracking-tight text-emerald-600 flex items-center gap-2">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                  <ClipboardList className="h-5 w-5" />
+                </div>
+                New Proposal
+              </DialogTitle>
+              <DialogDescription className="font-medium text-muted-foreground">
+                Draft a new price quotation for specialized motor parts from Thailand.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid gap-6 py-4">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Target Customer</label>
+                <Select 
+                  value={newQuote.customerId} 
+                  onValueChange={(val) => setNewQuote(prev => ({ ...prev, customerId: val ?? "" }))}
+                >
+                  <SelectTrigger className="h-12 rounded-xl bg-background/50 border-emerald-500/10 focus:ring-emerald-500/20">
+                    <SelectValue placeholder="Select Customer Account" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-emerald-500/10 bg-card/95 backdrop-blur-xl">
+                    {customers.map(c => (
+                      <SelectItem key={c.id} value={c.id} className="font-bold text-xs">
+                        {c.businessName} <span className="text-[9px] text-muted-foreground font-normal ml-2">({c.customerCode})</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Valid Until</label>
+                  <Input 
+                    type="date"
+                    value={newQuote.validUntil}
+                    onChange={(e) => setNewQuote(prev => ({ ...prev, validUntil: e.target.value }))}
+                    className="h-12 rounded-xl bg-background/50 border-emerald-500/10 focus-visible:ring-emerald-500/20 font-bold"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Sales Representative</label>
+                  <Input 
+                    disabled
+                    value={newQuote.assignedSalesRep}
+                    className="h-12 rounded-xl bg-muted/50 border-emerald-500/10 font-bold"
+                  />
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 border-dashed">
+                <p className="text-[9px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-2">Estimate Items</p>
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Input placeholder="Enter SKU or Part Number..." className="h-10 text-xs rounded-lg border-emerald-500/10 bg-white/50" />
+                    <Button size="icon" className="h-10 w-10 bg-emerald-500 rounded-lg shrink-0"><Plus className="h-4 w-4" /></Button>
+                  </div>
+                  <p className="text-[9px] text-muted-foreground italic ml-1">Price will be pulled from current Thailand Import specs.</p>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button variant="ghost" className="font-bold rounded-xl" onClick={() => setIsNewQuoteOpen(false)}>Discard</Button>
+              <Button 
+                className="bg-emerald-500 hover:bg-emerald-600 font-black rounded-xl px-8 shadow-lg shadow-emerald-500/20"
+                onClick={() => setIsNewQuoteOpen(false)}
+              >
+                Send Proposal
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {lastConverted && (
@@ -126,7 +229,7 @@ export default function QuotationList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map(q => {
+            {filtered.map((q: SalesQuote) => {
               const cust = getCustomer(q.customerId);
               const isExpired = new Date(q.validUntil) < new Date() && q.status === "SENT";
               return (
@@ -170,7 +273,10 @@ export default function QuotationList() {
                           )}
                         </Button>
                       )}
-                      <Button variant="ghost" size="sm" className="h-7 rounded-lg text-[10px] font-bold">View</Button>
+                      <Button variant="ghost" size="sm" className="h-7 rounded-lg text-[10px] font-bold" onClick={() => setSelectedQuote(q)}>View</Button>
+                      <Button variant="ghost" size="sm" className="h-7 rounded-lg text-[10px] font-bold" onClick={() => printDocument('quote', q, getCustomer(q.customerId))}>
+                        <Printer className="h-3 w-3" />
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -179,6 +285,14 @@ export default function QuotationList() {
           </TableBody>
         </Table>
       </Card>
+
+      <DocumentDetailModal
+        open={!!selectedQuote}
+        onClose={() => setSelectedQuote(null)}
+        type="quote"
+        doc={selectedQuote}
+        customer={selectedQuote ? getCustomer(selectedQuote.customerId) : undefined}
+      />
     </div>
   );
 }

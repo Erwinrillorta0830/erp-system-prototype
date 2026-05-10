@@ -3,6 +3,7 @@ import {
   SalesQuote, SalesOrder, POSTransaction,
   SalesInvoice, FulfillmentRecord, SalesReturn, DiscountRule,
 } from "../types";
+import { MOCK_PRODUCTS, MOCK_INVENTORY, MOCK_CATEGORIES, MOCK_UOMS } from "../../scm/mock/data";
 
 // ─── Price Tiers ─────────────────────────────────────────────────────────────
 export const MOCK_PRICE_TIERS: SalesPriceTier[] = [
@@ -41,18 +42,22 @@ export const MOCK_SALES_CUSTOMERS: SalesCustomer[] = [
 ];
 
 // ─── Products (Motor Parts) ──────────────────────────────────────────────────
-export const MOCK_SALES_PRODUCTS: SalesProduct[] = [
-  { id: "P-001", partNo: "HW125-PISTON-KIT", description: "Honda Wave 125 Piston Kit (STD)", brand: "OEM", category: "Piston", unit: "Set", srp: 420, stockAvailable: 180 },
-  { id: "P-002", partNo: "NMAX155-BELT",      description: "Yamaha NMAX 155 Drive Belt",       brand: "OEM", category: "Belt",   unit: "Pcs", srp: 1_150, stockAvailable: 45  },
-  { id: "P-003", partNo: "BRK-FRT-BREMBO-01", description: "Brembo Brake Pads Front (Universal)", brand: "Brembo",category:"Brake", unit:"Set", srp:195, stockAvailable: 320 },
-  { id: "P-004", partNo: "ADV150-AIRFLT",     description: "Honda ADV 150 Air Filter",          brand: "OEM", category: "Filter",unit: "Pcs", srp: 310, stockAvailable: 95  },
-  { id: "P-005", partNo: "MIO-CLUTCH-ASM",    description: "Yamaha Mio Clutch Assembly",        brand: "OEM", category: "Clutch",unit: "Set", srp: 890, stockAvailable: 60  },
-  { id: "P-006", partNo: "BEAT-OIL-SEAL",     description: "Honda Beat Oil Seal Set",           brand: "OEM", category: "Seal",  unit: "Set", srp: 155, stockAvailable: 200 },
-  { id: "P-007", partNo: "UNV-SPK-PLG-D8EA",  description: "NGK Spark Plug D8EA (Universal)",   brand: "NGK", category: "Ignition",unit:"Pcs",srp:85,  stockAvailable: 500 },
-  { id: "P-008", partNo: "BRG-6202-ZZ",       description: "Ball Bearing 6202ZZ",               brand: "SKF", category: "Bearing",unit:"Pcs",srp:95,  stockAvailable: 400 },
-  { id: "P-009", partNo: "NMAX-FORK-SEAL",    description: "Yamaha NMAX Fork Oil Seal",         brand: "OEM", category: "Seal",  unit: "Pcs", srp: 185, stockAvailable: 75  },
-  { id: "P-010", partNo: "CRB-CARB-WAVE110",  description: "Honda Wave 110 Carburetor Assembly",brand: "OEM", category: "Fuel",  unit: "Pcs", srp: 1_850, stockAvailable: 22 },
-];
+export const MOCK_SALES_PRODUCTS: SalesProduct[] = MOCK_PRODUCTS.map((p) => {
+  const inv = MOCK_INVENTORY.find((i) => i.productId === p.id);
+  const cat = MOCK_CATEGORIES.find((c) => c.id === p.categoryId)?.name || "Unknown";
+  const uom = MOCK_UOMS.find((u) => u.id === p.uomId)?.name || "Unit";
+  
+  return {
+    id: p.id,
+    partNo: p.sku,
+    description: p.description,
+    brand: p.brand || "Generic",
+    category: cat,
+    unit: uom,
+    srp: p.srp,
+    stockAvailable: inv ? inv.qtyOnHand : 0,
+  };
+});
 
 // ─── Sales Quotations ────────────────────────────────────────────────────────
 export const MOCK_QUOTES: SalesQuote[] = [
@@ -62,8 +67,8 @@ export const MOCK_QUOTES: SalesQuote[] = [
     dateCreated: "2026-04-12", validUntil: "2026-05-12",
     status: "SENT",
     lines: [
-      { id: "ql-1", productId: "P-001", description: "Honda Wave 125 Piston Kit (STD)", qty: 200, unitPrice: 315, discountAmt: 0, lineTotal: 63_000 },
-      { id: "ql-2", productId: "P-003", description: "Brembo Brake Pads Front",         qty: 500, unitPrice: 146, discountAmt: 0, lineTotal: 73_000 },
+      { id: "ql-1", productId: "prod-001", description: "Honda Wave 125 Piston Kit (STD)", qty: 200, unitPrice: 315, discountAmt: 0, lineTotal: 63_000 },
+      { id: "ql-2", productId: "prod-003", description: "Brembo Brake Pads Front",         qty: 500, unitPrice: 146, discountAmt: 0, lineTotal: 73_000 },
     ],
     grossAmount: 136_000, discountAmount: 11_000, netAmount: 125_000,
     taxAmount: 15_000, totalAmount: 140_000,
@@ -75,8 +80,8 @@ export const MOCK_QUOTES: SalesQuote[] = [
     dateCreated: "2026-04-10", validUntil: "2026-04-25",
     status: "ACCEPTED",
     lines: [
-      { id: "ql-3", productId: "P-007", description: "NGK Spark Plug D8EA",    qty: 100, unitPrice: 72, discountAmt: 0, lineTotal: 7_200 },
-      { id: "ql-4", productId: "P-008", description: "Ball Bearing 6202ZZ",    qty: 200, unitPrice: 80, discountAmt: 0, lineTotal: 16_000 },
+      { id: "ql-3", productId: "prod-003", description: "NGK Spark Plug D8EA",    qty: 100, unitPrice: 72, discountAmt: 0, lineTotal: 7_200 },
+      { id: "ql-4", productId: "prod-004", description: "Ball Bearing 6202ZZ",    qty: 200, unitPrice: 80, discountAmt: 0, lineTotal: 16_000 },
     ],
     grossAmount: 23_200, discountAmount: 3_480, netAmount: 19_720,
     taxAmount: 2_366, totalAmount: 22_086,
@@ -88,7 +93,7 @@ export const MOCK_QUOTES: SalesQuote[] = [
     dateCreated: "2026-03-25", validUntil: "2026-04-10",
     status: "EXPIRED",
     lines: [
-      { id: "ql-5", productId: "P-002", description: "Yamaha NMAX 155 Drive Belt", qty: 50, unitPrice: 862, discountAmt: 0, lineTotal: 43_100 },
+      { id: "ql-5", productId: "prod-002", description: "Yamaha NMAX 155 Drive Belt", qty: 50, unitPrice: 862, discountAmt: 0, lineTotal: 43_100 },
     ],
     grossAmount: 43_100, discountAmount: 10_775, netAmount: 32_325,
     taxAmount: 3_879, totalAmount: 36_204,
@@ -104,8 +109,8 @@ export const MOCK_SALES_ORDERS: SalesOrder[] = [
     warehouseId: "WH-MNL", paymentTerm: "Net 30", priceTierId: "pt-1",
     transactionDate: "2026-04-13", status: "PARTIALLY_FULFILLED",
     lines: [
-      { id: "sl-1", productId: "P-001", description: "Honda Wave 125 Piston Kit (STD)", orderedQty: 200, releasedQty: 150, unitPrice: 315, discountAmt: 0, lineTotal: 63_000, lineStatus: "PARTIAL" },
-      { id: "sl-2", productId: "P-003", description: "Brembo Brake Pads Front",         orderedQty: 500, releasedQty: 500, unitPrice: 146, discountAmt: 0, lineTotal: 73_000, lineStatus: "FULFILLED" },
+      { id: "sl-1", productId: "prod-001", description: "Honda Wave 125 Piston Kit (STD)", orderedQty: 200, releasedQty: 150, unitPrice: 315, discountAmt: 0, lineTotal: 63_000, lineStatus: "PARTIAL" },
+      { id: "sl-2", productId: "prod-003", description: "Brembo Brake Pads Front",         orderedQty: 500, releasedQty: 500, unitPrice: 146, discountAmt: 0, lineTotal: 73_000, lineStatus: "FULFILLED" },
     ],
     grossAmount: 136_000, discountAmount: 11_000, netAmount: 125_000, taxAmount: 15_000, totalAmount: 140_000,
     remarks: "50 pcs of Piston Kit held for next shipment.",
@@ -117,8 +122,8 @@ export const MOCK_SALES_ORDERS: SalesOrder[] = [
     paymentTerm: "COD", priceTierId: "pt-3",
     transactionDate: "2026-04-14", status: "FULFILLED",
     lines: [
-      { id: "sl-3", productId: "P-007", description: "NGK Spark Plug D8EA", orderedQty: 10, releasedQty: 10, unitPrice: 77, discountAmt: 0, lineTotal: 770, lineStatus: "FULFILLED" },
-      { id: "sl-4", productId: "P-008", description: "Ball Bearing 6202ZZ",  orderedQty: 20, releasedQty: 20, unitPrice: 86, discountAmt: 0, lineTotal: 1_720, lineStatus: "FULFILLED" },
+      { id: "sl-3", productId: "prod-003", description: "NGK Spark Plug D8EA", orderedQty: 10, releasedQty: 10, unitPrice: 77, discountAmt: 0, lineTotal: 770, lineStatus: "FULFILLED" },
+      { id: "sl-4", productId: "prod-004", description: "Ball Bearing 6202ZZ",  orderedQty: 20, releasedQty: 20, unitPrice: 86, discountAmt: 0, lineTotal: 1_720, lineStatus: "FULFILLED" },
     ],
     grossAmount: 2_490, discountAmount: 249, netAmount: 2_241, taxAmount: 269, totalAmount: 2_510,
   },
@@ -129,8 +134,8 @@ export const MOCK_SALES_ORDERS: SalesOrder[] = [
     warehouseId: "WH-MNL", paymentTerm: "Net 15", priceTierId: "pt-2",
     transactionDate: "2026-04-14", status: "CONFIRMED",
     lines: [
-      { id: "sl-5", productId: "P-007", description: "NGK Spark Plug D8EA",  orderedQty: 100, releasedQty: 0, unitPrice: 72,  discountAmt: 0, lineTotal: 7_200,  lineStatus: "PENDING" },
-      { id: "sl-6", productId: "P-008", description: "Ball Bearing 6202ZZ",  orderedQty: 200, releasedQty: 0, unitPrice: 80,  discountAmt: 0, lineTotal: 16_000, lineStatus: "PENDING" },
+      { id: "sl-5", productId: "prod-003", description: "NGK Spark Plug D8EA",  orderedQty: 100, releasedQty: 0, unitPrice: 72,  discountAmt: 0, lineTotal: 7_200,  lineStatus: "PENDING" },
+      { id: "sl-6", productId: "prod-004", description: "Ball Bearing 6202ZZ",  orderedQty: 200, releasedQty: 0, unitPrice: 80,  discountAmt: 0, lineTotal: 16_000, lineStatus: "PENDING" },
     ],
     grossAmount: 23_200, discountAmount: 3_480, netAmount: 19_720, taxAmount: 2_366, totalAmount: 22_086,
   },
@@ -144,8 +149,8 @@ export const MOCK_POS_TRANSACTIONS: POSTransaction[] = [
     transactionDate: "2026-04-14T14:30:00", status: "CHECKED_OUT",
     paymentMethod: "CASH",
     items: [
-      { productId: "P-004", partNo: "ADV150-AIRFLT",   description: "Honda ADV 150 Air Filter",    qty: 1, unitPrice: 310, discountAmt: 0, lineTotal: 310 },
-      { productId: "P-008", partNo: "BRG-6202-ZZ",     description: "Ball Bearing 6202ZZ",          qty: 3, unitPrice: 95,  discountAmt: 0, lineTotal: 285 },
+      { productId: "prod-004", partNo: "ADV150-AIRFLT",   description: "Honda ADV 150 Air Filter",    qty: 1, unitPrice: 310, discountAmt: 0, lineTotal: 310 },
+      { productId: "prod-004", partNo: "BRG-6202-ZZ",     description: "Ball Bearing 6202ZZ",          qty: 3, unitPrice: 95,  discountAmt: 0, lineTotal: 285 },
     ],
     subtotal: 595, discountAmount: 0, taxAmount: 71, totalAmount: 666,
     amountTendered: 700, changeAmount: 34,
@@ -156,8 +161,8 @@ export const MOCK_POS_TRANSACTIONS: POSTransaction[] = [
     transactionDate: "2026-04-14T15:10:00", status: "CHECKED_OUT",
     paymentMethod: "GCASH",
     items: [
-      { productId: "P-007", partNo: "UNV-SPK-PLG-D8EA", description: "NGK Spark Plug D8EA",         qty: 4, unitPrice: 85, discountAmt: 0, lineTotal: 340 },
-      { productId: "P-006", partNo: "BEAT-OIL-SEAL",    description: "Honda Beat Oil Seal Set",      qty: 2, unitPrice: 155, discountAmt: 0, lineTotal: 310 },
+      { productId: "prod-003", partNo: "UNV-SPK-PLG-D8EA", description: "NGK Spark Plug D8EA",         qty: 4, unitPrice: 85, discountAmt: 0, lineTotal: 340 },
+      { productId: "prod-002", partNo: "BEAT-OIL-SEAL",    description: "Honda Beat Oil Seal Set",      qty: 2, unitPrice: 155, discountAmt: 0, lineTotal: 310 },
     ],
     subtotal: 650, discountAmount: 0, taxAmount: 78, totalAmount: 728,
   },
@@ -179,8 +184,8 @@ export const MOCK_INVOICES: SalesInvoice[] = [
     channel: "WHOLESALE", issueDate: "2026-04-13", dueDate: "2026-05-13",
     status: "PARTIALLY_PAID",
     lines: [
-      { id: "il-1", productId: "P-001", description: "Honda Wave 125 Piston Kit (STD)", qty: 150, unitPrice: 315, lineTotal: 47_250 },
-      { id: "il-2", productId: "P-003", description: "Brembo Brake Pads Front",         qty: 500, unitPrice: 146, lineTotal: 73_000 },
+      { id: "il-1", productId: "prod-001", description: "Honda Wave 125 Piston Kit (STD)", qty: 150, unitPrice: 315, lineTotal: 47_250 },
+      { id: "il-2", productId: "prod-003", description: "Brembo Brake Pads Front",         qty: 500, unitPrice: 146, lineTotal: 73_000 },
     ],
     grossAmount: 120_250, discountAmount: 11_000, netAmount: 109_250, taxAmount: 13_110, totalAmount: 122_360,
     amountPaid: 60_000, balance: 62_360,
@@ -191,8 +196,8 @@ export const MOCK_INVOICES: SalesInvoice[] = [
     channel: "RETAIL", issueDate: "2026-04-14",
     status: "PAID",
     lines: [
-      { id: "il-3", productId: "P-007", description: "NGK Spark Plug D8EA", qty: 10, unitPrice: 77,  lineTotal: 770  },
-      { id: "il-4", productId: "P-008", description: "Ball Bearing 6202ZZ",  qty: 20, unitPrice: 86,  lineTotal: 1_720 },
+      { id: "il-3", productId: "prod-003", description: "NGK Spark Plug D8EA", qty: 10, unitPrice: 77,  lineTotal: 770  },
+      { id: "il-4", productId: "prod-004", description: "Ball Bearing 6202ZZ",  qty: 20, unitPrice: 86,  lineTotal: 1_720 },
     ],
     grossAmount: 2_490, discountAmount: 249, netAmount: 2_241, taxAmount: 269, totalAmount: 2_510,
     amountPaid: 2_510, balance: 0,
@@ -203,8 +208,8 @@ export const MOCK_INVOICES: SalesInvoice[] = [
     channel: "WALKIN", issueDate: "2026-04-14",
     status: "PAID",
     lines: [
-      { id: "il-5", productId: "P-004", description: "Honda ADV 150 Air Filter", qty: 1, unitPrice: 310, lineTotal: 310 },
-      { id: "il-6", productId: "P-008", description: "Ball Bearing 6202ZZ",       qty: 3, unitPrice: 95,  lineTotal: 285 },
+      { id: "il-5", productId: "prod-004", description: "Honda ADV 150 Air Filter", qty: 1, unitPrice: 310, lineTotal: 310 },
+      { id: "il-6", productId: "prod-004", description: "Ball Bearing 6202ZZ",       qty: 3, unitPrice: 95,  lineTotal: 285 },
     ],
     grossAmount: 595, discountAmount: 0, netAmount: 595, taxAmount: 71, totalAmount: 666,
     amountPaid: 666, balance: 0,
@@ -219,8 +224,8 @@ export const MOCK_FULFILLMENTS: FulfillmentRecord[] = [
     warehouseId: "WH-MNL", status: "COMPLETED",
     assignedTo: "Warehouse Staff A", releaseDate: "2026-04-13",
     lines: [
-      { id: "ffl-1", productId: "P-001", description: "Honda Wave 125 Piston Kit (STD)", orderedQty: 200, releasedQty: 150, pendingQty: 50 },
-      { id: "ffl-2", productId: "P-003", description: "Brembo Brake Pads Front",         orderedQty: 500, releasedQty: 500, pendingQty: 0  },
+      { id: "ffl-1", productId: "prod-001", description: "Honda Wave 125 Piston Kit (STD)", orderedQty: 200, releasedQty: 150, pendingQty: 50 },
+      { id: "ffl-2", productId: "prod-003", description: "Brembo Brake Pads Front",         orderedQty: 500, releasedQty: 500, pendingQty: 0  },
     ],
   },
   {
@@ -229,8 +234,8 @@ export const MOCK_FULFILLMENTS: FulfillmentRecord[] = [
     warehouseId: "WH-MNL", status: "PENDING",
     assignedTo: "Warehouse Staff B",
     lines: [
-      { id: "ffl-3", productId: "P-007", description: "NGK Spark Plug D8EA",  orderedQty: 100, releasedQty: 0, pendingQty: 100 },
-      { id: "ffl-4", productId: "P-008", description: "Ball Bearing 6202ZZ",  orderedQty: 200, releasedQty: 0, pendingQty: 200 },
+      { id: "ffl-3", productId: "prod-003", description: "NGK Spark Plug D8EA",  orderedQty: 100, releasedQty: 0, pendingQty: 100 },
+      { id: "ffl-4", productId: "prod-004", description: "Ball Bearing 6202ZZ",  orderedQty: 200, releasedQty: 0, pendingQty: 200 },
     ],
   },
 ];
@@ -243,7 +248,7 @@ export const MOCK_RETURNS: SalesReturn[] = [
     customerId: "SC-001", status: "APPROVED",
     resolutionType: "REPLACEMENT", dateLogged: "2026-04-14",
     lines: [
-      { id: "rl-1", productId: "P-001", description: "Honda Wave 125 Piston Kit (STD)", returnQty: 5, unitPrice: 315, lineTotal: 1_575, reason: "WRONG_FITMENT", remarks: "Customer ordered STD bore; actual engine needs +0.25" },
+      { id: "rl-1", productId: "prod-001", description: "Honda Wave 125 Piston Kit (STD)", returnQty: 5, unitPrice: 315, lineTotal: 1_575, reason: "WRONG_FITMENT", remarks: "Customer ordered STD bore; actual engine needs +0.25" },
     ],
     totalReturnAmount: 1_575,
     remarks: "Replacement stock to be sourced from next Thailand shipment.",

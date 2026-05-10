@@ -48,6 +48,8 @@ export interface Product {
   minOrderQty: number;
   primarySupplierId: string;
   image?: string;
+  brand?: string;
+  srp: number; // Unified Retail Price
 }
 
 export interface Warehouse {

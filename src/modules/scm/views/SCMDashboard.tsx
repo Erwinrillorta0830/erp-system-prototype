@@ -33,8 +33,8 @@ const SCMDashboard: React.FC = () => {
   const { suppliers } = useSuppliers();
 
   const totalStockValue = purchaseOrders.reduce((acc, po) => acc + (po.totalAmount * po.exchangeRate), 0);
-  const lowStockCount = inventory.filter(i => i.qtyOnHand <= i.reorderPoint).length;
-  const activeShipments = shipments.filter(s => s.status !== "DELIVERED").length;
+  const lowStockCount = inventory.filter((i) => i.qtyOnHand <= i.reorderPoint).length;
+  const activeShipments = shipments.filter((s) => s.status !== "DELIVERED").length;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">

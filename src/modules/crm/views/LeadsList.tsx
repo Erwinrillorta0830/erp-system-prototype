@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useLeads } from "../hooks/use-crm";
+import { Lead } from "../types";
 import { 
   Card, CardContent, CardHeader, CardTitle, CardDescription 
 } from "@/components/ui/card";
@@ -22,9 +23,45 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter, 
+  DialogTrigger,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 const LeadsList: React.FC = () => {
   const { leads, updateLeadStatus } = useLeads();
+  const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
+
+  // Form State
+  const [newLead, setNewLead] = useState<{
+    prospectName: string;
+    businessName: string;
+    email: string;
+    phone: string;
+    source: string;
+    interestLevel: string;
+    assignedTo: string;
+  }>({
+    prospectName: "",
+    businessName: "",
+    email: "",
+    phone: "",
+    source: "WEBSITE",
+    interestLevel: "MEDIUM",
+    assignedTo: "Current User",
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -53,9 +90,108 @@ const LeadsList: React.FC = () => {
           <h1 className="text-3xl font-bold tracking-tight">Leads & Prospects</h1>
           <p className="text-muted-foreground">Capture and qualify potential motor parts buyers.</p>
         </div>
-        <Button className="bg-primary px-6 shadow-lg shadow-primary/20">
-          <UserPlus className="mr-2 h-4 w-4" /> Add Lead
-        </Button>
+        <Dialog open={isAddLeadOpen} onOpenChange={setIsAddLeadOpen}>
+          <DialogTrigger render={
+            <Button className="bg-primary px-6 shadow-lg shadow-primary/20">
+              <UserPlus className="mr-2 h-4 w-4" /> Add Lead
+            </Button>
+          } />
+          <DialogContent className="sm:max-w-[550px] border-primary/20 bg-card/95 backdrop-blur-xl rounded-[2rem]">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black tracking-tight text-primary flex items-center gap-2">
+                <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
+                  <UserPlus className="h-5 w-5" />
+                </div>
+                New Discovery
+              </DialogTitle>
+              <DialogDescription className="font-medium text-muted-foreground">
+                Capture a new potential business partner or repeat retail prospect.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Prospect Name</label>
+                  <Input 
+                    placeholder="e.g. Juan De La Cruz"
+                    value={newLead.prospectName}
+                    onChange={(e) => setNewLead(prev => ({ ...prev, prospectName: e.target.value }))}
+                    className="h-12 rounded-xl bg-background/50 border-primary/10 focus-visible:ring-primary/20 font-bold"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Associated Business</label>
+                  <Input 
+                    placeholder="e.g. JDL Motor Shop"
+                    value={newLead.businessName}
+                    onChange={(e) => setNewLead(prev => ({ ...prev, businessName: e.target.value }))}
+                    className="h-12 rounded-xl bg-background/50 border-primary/10 focus-visible:ring-primary/20 font-bold"
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Contact Phone</label>
+                  <Input 
+                    placeholder="+63 9xx xxxx xxx"
+                    value={newLead.phone}
+                    onChange={(e) => setNewLead(prev => ({ ...prev, phone: e.target.value }))}
+                    className="h-12 rounded-xl bg-background/50 border-primary/10 font-bold"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Lead Source</label>
+                  <Select 
+                    value={newLead.source}
+                    onValueChange={(val) => setNewLead(prev => ({ ...prev, source: val ?? "" }))}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl bg-background/50 border-primary/10">
+                      <SelectValue placeholder="Source" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                      {["WEBSITE", "REFERRAL", "SOCIAL_MEDIA", "EXHIBITION", "COLD_CALL"].map(s => (
+                        <SelectItem key={s} value={s} className="font-bold text-xs">{s.replace("_", " ")}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Initial Interest Rating</label>
+                <div className="flex gap-2">
+                  {["LOW", "MEDIUM", "HIGH"].map(level => (
+                    <button
+                      key={level}
+                      onClick={() => setNewLead(prev => ({ ...prev, interestLevel: level }))}
+                      className={`flex-1 h-12 rounded-xl border font-black text-[10px] uppercase tracking-widest transition-all ${
+                        newLead.interestLevel === level
+                          ? level === "HIGH" ? "bg-rose-500 text-white border-rose-500 shadow-lg shadow-rose-500/20"
+                            : level === "MEDIUM" ? "bg-amber-500 text-white border-amber-500 shadow-lg shadow-amber-500/20"
+                            : "bg-blue-500 text-white border-blue-500 shadow-lg shadow-blue-500/20"
+                          : "bg-muted text-muted-foreground border-transparent hover:bg-muted/80"
+                      }`}
+                    >
+                      {level}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button variant="ghost" className="font-bold rounded-xl" onClick={() => setIsAddLeadOpen(false)}>Discard</Button>
+              <Button 
+                className="bg-primary hover:bg-primary/90 font-black rounded-xl px-8 shadow-lg shadow-primary/20"
+                onClick={() => setIsAddLeadOpen(false)}
+              >
+                Register Prospect
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -103,7 +239,7 @@ const LeadsList: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {leads.map((lead) => (
+              {leads.map((lead: Lead) => (
                 <TableRow key={lead.id} className="hover:bg-primary/5 border-primary/5 group cursor-pointer">
                   <TableCell>
                     <div className="font-black text-xs">{lead.prospectName}</div>

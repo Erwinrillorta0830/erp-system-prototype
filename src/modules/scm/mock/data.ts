@@ -71,6 +71,8 @@ export const MOCK_PRODUCTS: Product[] = [
     dimensions: { length: 15, width: 10, height: 10 },
     minOrderQty: 50,
     primarySupplierId: "sup-001",
+    brand: "OEM",
+    srp: 420,
   },
   {
     id: "prod-002",
@@ -83,6 +85,8 @@ export const MOCK_PRODUCTS: Product[] = [
     dimensions: { length: 30, width: 20, height: 5 },
     minOrderQty: 30,
     primarySupplierId: "sup-002",
+    brand: "OEM",
+    srp: 1150,
   },
   {
     id: "prod-003",
@@ -95,6 +99,8 @@ export const MOCK_PRODUCTS: Product[] = [
     dimensions: { length: 12, width: 8, height: 4 },
     minOrderQty: 100,
     primarySupplierId: "sup-001",
+    brand: "Brembo",
+    srp: 195,
   },
   {
     id: "prod-004",
@@ -107,6 +113,8 @@ export const MOCK_PRODUCTS: Product[] = [
     dimensions: { length: 8, width: 8, height: 8 },
     minOrderQty: 200,
     primarySupplierId: "sup-002",
+    brand: "OEM",
+    srp: 310,
   },
 ];
 

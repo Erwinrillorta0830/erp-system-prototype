@@ -12,6 +12,15 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter, 
+  DialogTrigger,
+  DialogDescription
+} from "@/components/ui/dialog";
 import { useHRM } from '../context/hrm-context';
 import { cn } from '@/lib/utils';
 import { RequestStatus } from '../types/hrm.types';
@@ -24,6 +33,18 @@ export default function RequestCenter() {
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<RequestStatus | 'ALL'>('ALL');
+  const [isNewRequestOpen, setIsNewRequestOpen] = useState(false);
+
+  // Form State
+  const [newRequest, setNewRequest] = useState({
+    employeeId: "",
+    type: "LEAVE",
+    leaveType: "Sick Leave",
+    startDate: new Date().toISOString().split("T")[0],
+    endDate: new Date().toISOString().split("T")[0],
+    reason: "",
+    hours: "1", // for OT
+  });
 
   const filteredLeaves = leaveRequests.filter(r => {
     const emp = employees.find(e => e.id === r.employeeId);
@@ -70,6 +91,135 @@ export default function RequestCenter() {
                  {leaveRequests.length + overtimeRequests.length}
               </span>
            </div>
+           <Dialog open={isNewRequestOpen} onOpenChange={setIsNewRequestOpen}>
+            <DialogTrigger render={
+              <Button className="h-14 bg-zinc-900 hover:bg-zinc-800 text-white font-black rounded-xl px-8 ml-2 group">
+                <FileText className="mr-2 h-5 w-5 text-blue-400" /> 
+                File New Request
+              </Button>
+            } />
+            <DialogContent className="sm:max-w-[550px] border-zinc-200 bg-card/95 backdrop-blur-xl rounded-[2.5rem]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-black tracking-tight text-zinc-900 flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-2xl bg-zinc-900 flex items-center justify-center text-white shadow-lg shadow-zinc-200">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                  Request Filing
+                </DialogTitle>
+                <DialogDescription className="font-medium text-muted-foreground">
+                  Submit a formal request for leave or overtime for administrative approval.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-6 py-4">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Staff Member</label>
+                    <Select 
+                      value={newRequest.employeeId}
+                      onValueChange={(val) => setNewRequest(prev => ({ ...prev, employeeId: val ?? "" }))}
+                    >
+                      <SelectTrigger className="h-12 rounded-xl bg-zinc-50 border-none font-bold">
+                        <SelectValue placeholder="Select Requester" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-zinc-200 shadow-2xl">
+                        {employees.map(e => (
+                          <SelectItem key={e.id} value={e.id} className="font-bold text-xs">{e.fullName}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Request Category</label>
+                      <Select 
+                        value={newRequest.type}
+                        onValueChange={(val) => setNewRequest(prev => ({ ...prev, type: (val as "LEAVE" | "OT") ?? "LEAVE" }))}
+                      >
+                        <SelectTrigger className="h-12 rounded-xl bg-zinc-50 border-none font-bold">
+                          <SelectValue placeholder="Category" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl border-zinc-200 shadow-2xl">
+                          <SelectItem value="LEAVE" className="font-bold text-xs text-orange-600">Leave Absence</SelectItem>
+                          <SelectItem value="OT" className="font-bold text-xs text-blue-600">Overtime / Undertime</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    {newRequest.type === "LEAVE" ? (
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Leave Classification</label>
+                        <Select 
+                          value={newRequest.leaveType}
+                          onValueChange={(val) => setNewRequest(prev => ({ ...prev, leaveType: val ?? "" }))}
+                        >
+                          <SelectTrigger className="h-12 rounded-xl bg-zinc-50 border-none font-bold">
+                            <SelectValue placeholder="Classification" />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-xl border-zinc-200 shadow-2xl">
+                            {["Sick Leave", "Vacation Leave", "Emergency Leave", "Paternity/Maternity"].map(t => (
+                              <SelectItem key={t} value={t} className="font-bold text-xs">{t}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Duration (Hours)</label>
+                        <Input 
+                          type="number"
+                          value={newRequest.hours}
+                          onChange={(e) => setNewRequest(prev => ({ ...prev, hours: e.target.value }))}
+                          className="h-12 rounded-xl bg-zinc-50 border-none font-bold"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Starting From</label>
+                      <Input 
+                        type="date"
+                        value={newRequest.startDate}
+                        onChange={(e) => setNewRequest(prev => ({ ...prev, startDate: e.target.value }))}
+                        className="h-12 rounded-xl bg-zinc-50 border-none font-bold"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Ending On</label>
+                      <Input 
+                        type="date"
+                        value={newRequest.endDate}
+                        onChange={(e) => setNewRequest(prev => ({ ...prev, endDate: e.target.value }))}
+                        className="h-12 rounded-xl bg-zinc-50 border-none font-bold"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Justification / Remarks</label>
+                    <Input 
+                      placeholder="State the reason for this request..."
+                      value={newRequest.reason}
+                      onChange={(e) => setNewRequest(prev => ({ ...prev, reason: e.target.value }))}
+                      className="h-12 rounded-xl bg-zinc-50 border-none font-bold"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter className="gap-2 px-0 pb-0">
+                <Button variant="ghost" className="h-12 font-black rounded-xl px-6" onClick={() => setIsNewRequestOpen(false)}>Cancel Filing</Button>
+                <Button 
+                  className="h-12 bg-blue-600 hover:bg-blue-700 font-black rounded-xl px-10 shadow-lg shadow-blue-200 transition-all active:scale-95"
+                  onClick={() => setIsNewRequestOpen(false)}
+                >
+                  Submit Request
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -83,7 +233,7 @@ export default function RequestCenter() {
              className="pl-12 h-12 bg-zinc-50 border-none rounded-xl font-medium focus-visible:ring-2 focus-visible:ring-blue-50" 
            />
         </div>
-        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
+        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as RequestStatus | 'ALL')}>
            <SelectTrigger className="h-12 w-full md:w-48 bg-zinc-50 border-none rounded-xl font-bold text-zinc-600">
               <div className="flex items-center gap-2">
                 <Filter className="w-4 h-4" />

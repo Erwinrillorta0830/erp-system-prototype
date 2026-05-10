@@ -60,7 +60,7 @@ export const TrendChart: React.FC<TrendChartProps> = ({
             />
             <Tooltip 
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-              formatter={(value: number) => [`₱ ${value.toLocaleString()}`, "Value"]}
+              formatter={(value: any) => [`₱ ${Number(value).toLocaleString()}`, "Value"]}
             />
             <Area
               type="monotone"

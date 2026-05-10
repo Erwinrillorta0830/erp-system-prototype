@@ -39,11 +39,11 @@ const LandedCostAllocation: React.FC = () => {
   const totalBurden = freightCost + customsDuty + brokerageFee;
 
   const currentShipment = shipments.find(s => s.id === selectedShipmentId);
-  const relatedPOs = purchaseOrders.filter(po => currentShipment?.poIds.includes(po.id));
+  const relatedPOs = purchaseOrders.filter((po) => currentShipment?.poIds.includes(po.id));
   
   // Aggregate all items from related POs
-  const shipmentItems = relatedPOs.flatMap(po => 
-    po.lines.map(line => ({
+  const shipmentItems = relatedPOs.flatMap((po) => 
+    po.lines.map((line) => ({
       ...line,
       poNumber: po.poNumber,
       productName: products.find(p => p.id === line.productId)?.description || "Unknown Part",
@@ -85,7 +85,7 @@ const LandedCostAllocation: React.FC = () => {
             <CardContent className="space-y-5">
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Shipment Target</label>
-                <Select value={selectedShipmentId} onValueChange={setSelectedShipmentId}>
+                <Select value={selectedShipmentId} onValueChange={(val) => setSelectedShipmentId(val ?? "")}>
                   <SelectTrigger className="bg-background/50 h-11 transition-all focus:ring-1 focus:ring-primary border-border/50">
                     <SelectValue placeholder="Select Shipment" />
                   </SelectTrigger>

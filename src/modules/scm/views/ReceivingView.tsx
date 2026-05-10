@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { usePurchaseOrders, useInventory, useSCM } from "../hooks/use-scm";
+import { usePurchaseOrders, useInventory } from "../hooks/use-scm";
+import { PurchaseOrder } from "../types";
 import { 
   Card, CardContent, CardHeader, CardTitle, CardDescription 
 } from "@/components/ui/card";
@@ -23,7 +24,7 @@ const ReceivingView: React.FC = () => {
   const { updateInventory } = useInventory();
 
   // For simulation, we'll consider CONFIRMED or PARTIAL POs as ready for receiving
-  const receivablePOs = purchaseOrders.filter(po => 
+  const receivablePOs = purchaseOrders.filter((po) => 
     po.status === "CONFIRMED" || po.status === "PARTIAL"
   );
 
@@ -68,7 +69,7 @@ const ReceivingView: React.FC = () => {
                 <p>No pending receipts found.</p>
               </div>
             ) : (
-              receivablePOs.map((po) => (
+              receivablePOs.map((po: PurchaseOrder) => (
                 <div key={po.id} className="p-4 rounded-xl border border-border bg-background/50 hover:border-primary/30 transition-all group">
                   <div className="flex justify-between items-start mb-3">
                     <div>

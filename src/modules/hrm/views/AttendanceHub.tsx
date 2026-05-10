@@ -11,6 +11,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter, 
+  DialogTrigger,
+  DialogDescription
+} from "@/components/ui/dialog";
 import { useHRM } from '../context/hrm-context';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -20,6 +29,16 @@ export default function AttendanceHub() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [search, setSearch] = useState('');
   const [branchFilter, setBranchFilter] = useState('all');
+  const [isManualEntryOpen, setIsManualEntryOpen] = useState(false);
+
+  // Form State
+  const [manualEntry, setManualEntry] = useState({
+    employeeId: "",
+    date: new Date().toISOString().split("T")[0],
+    timeIn: "08:00",
+    timeOut: "17:00",
+    source: "MANUAL_ADJUSTMENT",
+  });
 
   const dateStr = format(selectedDate, 'yyyy-MM-dd');
   
@@ -66,9 +85,90 @@ export default function AttendanceHub() {
           <Button variant="outline" className="h-12 border-zinc-200 bg-white font-bold rounded-xl px-6">
             <Download className="mr-2 h-4 w-4" /> Export Report
           </Button>
-          <Button className="h-12 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200 font-bold rounded-xl px-8">
-            <Clock className="mr-2 h-5 w-5" /> Manual Entry
-          </Button>
+          <Dialog open={isManualEntryOpen} onOpenChange={setIsManualEntryOpen}>
+            <DialogTrigger render={
+              <Button className="h-12 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-200 font-bold rounded-xl px-8">
+                <Clock className="mr-2 h-5 w-5" /> Manual Entry
+              </Button>
+            } />
+            <DialogContent className="sm:max-w-[500px] border-blue-500/10 bg-card/95 backdrop-blur-xl rounded-[2.5rem]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-black tracking-tight text-blue-600 flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                    <Clock className="h-5 w-5" />
+                  </div>
+                  Manual Time Correction
+                </DialogTitle>
+                <DialogDescription className="font-medium text-muted-foreground">
+                  Adjust attendance logs for off-site deployments or missed punches.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-6 py-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Employee Account</label>
+                  <Select 
+                    value={manualEntry.employeeId}
+                    onValueChange={(val) => setManualEntry(prev => ({ ...prev, employeeId: val ?? "" }))}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl bg-zinc-50 border-none font-bold">
+                      <SelectValue placeholder="Select Staff Member" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-zinc-200 shadow-2xl">
+                      {employees.map(e => (
+                        <SelectItem key={e.id} value={e.id} className="font-bold text-xs">{e.fullName} ({e.employeeCode})</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Effective Date</label>
+                  <Input 
+                    type="date"
+                    value={manualEntry.date}
+                    onChange={(e) => setManualEntry(prev => ({ ...prev, date: e.target.value }))}
+                    className="h-12 rounded-xl bg-zinc-50 border-none font-bold"
+                  />
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Clock IN</label>
+                    <Input 
+                      type="time"
+                      value={manualEntry.timeIn}
+                      onChange={(e) => setManualEntry(prev => ({ ...prev, timeIn: e.target.value }))}
+                      className="h-12 rounded-xl bg-zinc-50 border-none font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Clock OUT</label>
+                    <Input 
+                      type="time"
+                      value={manualEntry.timeOut}
+                      onChange={(e) => setManualEntry(prev => ({ ...prev, timeOut: e.target.value }))}
+                      className="h-12 rounded-xl bg-zinc-50 border-none font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 text-[11px] font-medium text-blue-700 leading-relaxed italic">
+                  Note: Manual entries are flagged for HR review and timestamped with the current administrator's credentials.
+                </div>
+              </div>
+
+              <DialogFooter className="gap-2 px-0 pb-0">
+                <Button variant="ghost" className="h-12 font-black rounded-xl px-6" onClick={() => setIsManualEntryOpen(false)}>Discard</Button>
+                <Button 
+                  className="h-12 bg-blue-600 hover:bg-blue-700 font-black rounded-xl px-10 shadow-lg shadow-blue-200 transition-all active:scale-95"
+                  onClick={() => setIsManualEntryOpen(false)}
+                >
+                  Save Adjustment
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

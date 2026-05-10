@@ -77,12 +77,12 @@ export const SalesAnalytics: React.FC = () => {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {pieData.map((entry, index) => (
+                  {pieData.map((entry: any, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <RechartsTooltip 
-                  formatter={(value: number) => `₱ ${value.toLocaleString()}`}
+                  formatter={(value: any) => `₱ ${Number(value).toLocaleString()}`}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
                 <Legend verticalAlign="bottom" height={36}/>
@@ -90,7 +90,7 @@ export const SalesAnalytics: React.FC = () => {
             </ResponsiveContainer>
           </div>
           <div className="space-y-3 mt-4">
-            {pieData.map((c, i) => (
+            {pieData.map((c: any, i: number) => (
                 <div key={c.name} className="flex justify-between items-center text-sm border-b border-zinc-100 dark:border-zinc-800 pb-2 last:border-0 last:pb-0">
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i] }}></div>

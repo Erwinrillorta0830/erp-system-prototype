@@ -1,10 +1,7 @@
-import HRMModule from "@/modules/hrm/HRMModule";
+"use client";
 
-export const metadata = {
-  title: "HRM | MotorERP",
-  description: "Advanced Human Resource Management for motor parts distribution.",
-};
+import HRDashboard from "@/modules/hrm/views/Dashboard";
 
 export default function HRMPage() {
-  return <HRMModule />;
+  return <HRDashboard />;
 }

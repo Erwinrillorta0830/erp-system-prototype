@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useHRM } from '../context/hrm-context';
 import { Employee, EmploymentStatus } from '../types/hrm.types';
 import { User, Mail, Phone, Building2, Briefcase, CreditCard } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 interface EmployeeFormProps {
   open: boolean;
@@ -117,7 +118,7 @@ export default function EmployeeForm({ open, onOpenChange, employee }: EmployeeF
                 </label>
                 <Select 
                   value={formData.branchId} 
-                  onValueChange={v => setFormData({...formData, branchId: v})}
+                  onValueChange={v => setFormData({...formData, branchId: v ?? ""})}
                 >
                   <SelectTrigger className="h-12 rounded-xl bg-zinc-50 border-zinc-100 font-bold">
                     <SelectValue placeholder="Select Branch" />
@@ -133,7 +134,7 @@ export default function EmployeeForm({ open, onOpenChange, employee }: EmployeeF
                 </label>
                 <Select 
                   value={formData.deptId} 
-                  onValueChange={v => setFormData({...formData, deptId: v})}
+                  onValueChange={v => setFormData({...formData, deptId: v ?? ""})}
                 >
                   <SelectTrigger className="h-12 rounded-xl bg-zinc-50 border-zinc-100 font-bold">
                     <SelectValue placeholder="Select Dept" />
@@ -149,7 +150,7 @@ export default function EmployeeForm({ open, onOpenChange, employee }: EmployeeF
                 </label>
                 <Select 
                   value={formData.positionId} 
-                  onValueChange={v => setFormData({...formData, positionId: v})}
+                  onValueChange={v => setFormData({...formData, positionId: v ?? ""})}
                 >
                   <SelectTrigger className="h-12 rounded-xl bg-zinc-50 border-zinc-100 font-bold">
                     <SelectValue placeholder="Select Position" />
@@ -165,7 +166,7 @@ export default function EmployeeForm({ open, onOpenChange, employee }: EmployeeF
                 </label>
                 <Select 
                   value={formData.status} 
-                  onValueChange={v => setFormData({...formData, status: v as EmploymentStatus})}
+                  onValueChange={v => setFormData({...formData, status: (v as EmploymentStatus) ?? "Probationary"})}
                 >
                   <SelectTrigger className="h-12 rounded-xl bg-zinc-50 border-zinc-100 font-bold">
                     <SelectValue placeholder="Select Status" />
@@ -181,9 +182,9 @@ export default function EmployeeForm({ open, onOpenChange, employee }: EmployeeF
           </div>
 
           <DialogFooter className="p-6 bg-zinc-50 flex items-center gap-3">
-             <DialogClose asChild>
+             <DialogClose render={
                 <Button type="button" variant="ghost" className="rounded-xl font-bold h-12 px-6">Cancel</Button>
-             </DialogClose>
+             } />
              <Button type="submit" className="rounded-xl bg-blue-600 hover:bg-blue-700 font-black h-12 px-8 shadow-lg shadow-blue-100">
                 {employee ? 'Update Record' : 'Complete Onboarding'}
              </Button>

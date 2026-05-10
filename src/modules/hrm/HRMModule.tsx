@@ -193,8 +193,7 @@ export default function HRMModule() {
         onOpenChange={setIsFilingOpen} 
         type={filingType} 
       />
-    </div>
-  </HRMProvider>
+    </HRMProvider>
   );
 }
 

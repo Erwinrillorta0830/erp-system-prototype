@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useInventory, useProducts } from "../hooks/use-scm";
 import { 
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
@@ -17,10 +17,50 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter,
+  DialogTrigger,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { Plus } from "lucide-react";
 
 const InventoryView: React.FC = () => {
   const { inventory, warehouses } = useInventory();
   const { products } = useProducts();
+  const [isTransferOpen, setIsTransferOpen] = useState(false);
+  const [isCountOpen, setIsCountOpen] = useState(false);
+
+  // Form States
+  const [transfer, setTransfer] = useState<{
+    productId: string;
+    fromWarehouseId: string;
+    toWarehouseId: string;
+    qty: string;
+  }>({
+    productId: "",
+    fromWarehouseId: "",
+    toWarehouseId: "",
+    qty: "0",
+  });
+
+  const [physicalCount, setPhysicalCount] = useState<{
+    warehouseId: string;
+    countedDate: string;
+  }>({
+    warehouseId: "",
+    countedDate: new Date().toISOString().split("T")[0],
+  });
 
   const getProductName = (id: string) => products.find(p => p.id === id)?.description || id;
   const getProductSku = (id: string) => products.find(p => p.id === id)?.sku || id;
@@ -36,10 +76,160 @@ const InventoryView: React.FC = () => {
           <p className="text-muted-foreground">Monitor real-time inventory balances across all Philippine branches.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
-            <ArrowRightLeft className="mr-2 h-4 w-4" /> Stock Transfer
-          </Button>
-          <Button>Physical Count</Button>
+          <Dialog open={isTransferOpen} onOpenChange={setIsTransferOpen}>
+            <DialogTrigger render={
+              <Button variant="outline">
+                <ArrowRightLeft className="mr-2 h-4 w-4" /> Stock Transfer
+              </Button>
+            } />
+            <DialogContent className="sm:max-w-[550px] border-primary/20 bg-card/95 backdrop-blur-xl rounded-[2rem]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-black tracking-tight text-primary flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
+                    <ArrowRightLeft className="h-5 w-5" />
+                  </div>
+                  Inventory Transfer
+                </DialogTitle>
+                <DialogDescription className="font-medium text-muted-foreground">
+                  Move stock between Philippine branches or transit hubs.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-6 py-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Select Product</label>
+                  <Select 
+                    value={transfer.productId}
+                    onValueChange={(val) => setTransfer(prev => ({ ...prev, productId: val ?? "" }))}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl bg-background/50 border-primary/10">
+                      <SelectValue placeholder="Which item are we moving?" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                      {products.map(p => (
+                        <SelectItem key={p.id} value={p.id} className="font-bold text-xs">{p.description}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Source Warehouse</label>
+                    <Select 
+                      value={transfer.fromWarehouseId}
+                      onValueChange={(val) => setTransfer(prev => ({ ...prev, fromWarehouseId: val ?? "" }))}
+                    >
+                      <SelectTrigger className="h-12 rounded-xl bg-background/50 border-primary/10">
+                        <SelectValue placeholder="From..." />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                        {warehouses.map(w => (
+                          <SelectItem key={w.id} value={w.id} className="font-bold text-xs">{w.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Destination</label>
+                    <Select 
+                      value={transfer.toWarehouseId}
+                      onValueChange={(val) => setTransfer(prev => ({ ...prev, toWarehouseId: val ?? "" }))}
+                    >
+                      <SelectTrigger className="h-12 rounded-xl bg-background/50 border-primary/10">
+                        <SelectValue placeholder="To..." />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                        {warehouses.map(w => (
+                          <SelectItem key={w.id} value={w.id} className="font-bold text-xs">{w.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Quantity to Transfer</label>
+                  <Input 
+                    type="number"
+                    value={transfer.qty}
+                    onChange={(e) => setTransfer(prev => ({ ...prev, qty: e.target.value }))}
+                    className="h-12 rounded-xl bg-background/50 border-primary/10 focus-visible:ring-primary/20 font-bold"
+                  />
+                </div>
+              </div>
+
+              <DialogFooter className="gap-2">
+                <Button variant="ghost" className="font-bold rounded-xl" onClick={() => setIsTransferOpen(false)}>Cancel</Button>
+                <Button 
+                  className="bg-primary hover:bg-primary/90 font-black rounded-xl px-8 shadow-lg shadow-primary/20"
+                  onClick={() => setIsTransferOpen(false)}
+                >
+                  Confirm Transfer
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={isCountOpen} onOpenChange={setIsCountOpen}>
+            <DialogTrigger render={<Button>Physical Count</Button>} />
+            <DialogContent className="sm:max-w-[500px] border-primary/20 bg-card/95 backdrop-blur-xl rounded-[2rem]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-black tracking-tight text-primary flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+                  Physical Inventory Count
+                </DialogTitle>
+                <DialogDescription className="font-medium text-muted-foreground">
+                  Initialize a store-wide stock verification for a specific branch.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-6 py-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Select Warehouse</label>
+                  <Select 
+                    value={physicalCount.warehouseId}
+                    onValueChange={(val) => setPhysicalCount(prev => ({ ...prev, warehouseId: val ?? "" }))}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl bg-background/50 border-primary/10">
+                      <SelectValue placeholder="Pick a location to audit" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                      {warehouses.map(w => (
+                        <SelectItem key={w.id} value={w.id} className="font-bold text-xs">{w.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Audit Effective Date</label>
+                  <Input 
+                    type="date"
+                    value={physicalCount.countedDate}
+                    onChange={(e) => setPhysicalCount(prev => ({ ...prev, countedDate: e.target.value }))}
+                    className="h-12 rounded-xl bg-background/50 border-primary/10 font-bold"
+                  />
+                </div>
+
+                <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/10 text-[11px] font-medium text-amber-700 leading-relaxed italic">
+                  Note: Initializing a count will capture a snapshot of the current "On Hand" ledger for variance calculation.
+                </div>
+              </div>
+
+              <DialogFooter className="gap-2">
+                <Button variant="ghost" className="font-bold rounded-xl" onClick={() => setIsCountOpen(false)}>Cancel</Button>
+                <Button 
+                  className="bg-primary hover:bg-primary/90 font-black rounded-xl px-8 shadow-lg shadow-primary/20"
+                  onClick={() => setIsCountOpen(false)}
+                >
+                  Initialize Audit
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

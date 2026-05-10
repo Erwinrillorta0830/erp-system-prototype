@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { usePurchaseOrders, useSuppliers } from "../hooks/use-scm";
 import { 
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
@@ -19,11 +19,43 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter, 
+  DialogTrigger,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 import { POStatus } from "../types";
 
 const POManagement: React.FC = () => {
   const { purchaseOrders } = usePurchaseOrders();
   const { suppliers } = useSuppliers();
+  const [isCreatePOOpen, setIsCreatePOOpen] = useState(false);
+
+  // Form State
+  const [newPO, setNewPO] = useState<{
+    supplierId: string;
+    orderDate: string;
+    expectedDate: string;
+    currency: string;
+    paymentTerms: string;
+  }>({
+    supplierId: "",
+    orderDate: new Date().toISOString().split("T")[0],
+    expectedDate: "",
+    currency: "PHP",
+    paymentTerms: "COD",
+  });
 
   const getSupplierName = (id: string) => suppliers.find(s => s.id === id)?.name || id;
 
@@ -50,9 +82,104 @@ const POManagement: React.FC = () => {
           <Button variant="outline">
             <FileText className="mr-2 h-4 w-4" /> Import Pro-forma
           </Button>
-          <Button className="bg-primary">
-            <Plus className="mr-2 h-4 w-4" /> Create PO
-          </Button>
+          <Dialog open={isCreatePOOpen} onOpenChange={setIsCreatePOOpen}>
+            <DialogTrigger render={
+              <Button className="bg-primary">
+                <Plus className="mr-2 h-4 w-4" /> Create PO
+              </Button>
+            } />
+            <DialogContent className="sm:max-w-[600px] border-primary/20 bg-card/95 backdrop-blur-xl rounded-[2rem]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-black tracking-tight text-primary flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
+                    <ShoppingCart className="h-5 w-5" />
+                  </div>
+                  New Purchase Request
+                </DialogTitle>
+                <DialogDescription className="font-medium text-muted-foreground">
+                  Draft a new stock procurement request from international or local suppliers.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-6 py-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Preferred Supplier</label>
+                    <Select 
+                      value={newPO.supplierId}
+                      onValueChange={(val) => setNewPO(prev => ({ ...prev, supplierId: val ?? "" }))}
+                    >
+                      <SelectTrigger className="h-12 rounded-xl bg-background/50 border-primary/10">
+                        <SelectValue placeholder="Select Vendor" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                        {suppliers.map(s => (
+                          <SelectItem key={s.id} value={s.id} className="font-bold text-xs">{s.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Payment Terms</label>
+                    <Select 
+                      value={newPO.paymentTerms}
+                      onValueChange={(val) => setNewPO(prev => ({ ...prev, paymentTerms: val ?? "" }))}
+                    >
+                      <SelectTrigger className="h-12 rounded-xl bg-background/50 border-primary/10">
+                        <SelectValue placeholder="Terms" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                        {["COD", "NET 15", "NET 30", "Letter of Credit"].map(t => (
+                          <SelectItem key={t} value={t} className="font-bold text-xs">{t}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Order Date</label>
+                    <Input 
+                      type="date"
+                      value={newPO.orderDate}
+                      onChange={(e) => setNewPO(prev => ({ ...prev, orderDate: e.target.value }))}
+                      className="h-12 rounded-xl bg-background/50 border-primary/10 font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">ETA in PH Hub</label>
+                    <Input 
+                      type="date"
+                      value={newPO.expectedDate}
+                      onChange={(e) => setNewPO(prev => ({ ...prev, expectedDate: e.target.value }))}
+                      className="h-12 rounded-xl bg-background/50 border-primary/10 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 border-dashed">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">Procurement Items</p>
+                    <Button variant="link" className="h-auto p-0 text-[9px] font-black underline uppercase text-primary">Add SKU</Button>
+                  </div>
+                  <p className="text-[11px] font-medium text-muted-foreground text-center py-6">
+                    Start adding parts to this PO. Costs will automatically reflect last import values.
+                  </p>
+                </div>
+              </div>
+
+              <DialogFooter className="gap-2">
+                <Button variant="ghost" className="font-bold rounded-xl" onClick={() => setIsCreatePOOpen(false)}>Save Draft</Button>
+                <Button 
+                  className="bg-primary hover:bg-primary/90 font-black rounded-xl px-8 shadow-lg shadow-primary/20"
+                  onClick={() => setIsCreatePOOpen(false)}
+                >
+                  Submit Order
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 

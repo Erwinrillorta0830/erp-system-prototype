@@ -26,6 +26,7 @@ interface SCMContextType {
   addShipment: (shipment: ShipmentTracking) => void;
   updateShipmentStatus: (id: string, status: ShipmentTracking["status"]) => void;
   updateInventory: (productId: string, warehouseId: string, qtyDelta: number) => void;
+  addProduct: (product: Product) => void;
 }
 
 const SCMContext = createContext<SCMContextType | undefined>(undefined);
@@ -45,11 +46,18 @@ export const SCMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const savedPOs = localStorage.getItem("scm_pos");
     const savedShipments = localStorage.getItem("scm_shipments");
     const savedInventory = localStorage.getItem("scm_inventory");
+    const savedProducts = localStorage.getItem("scm_products");
     
     if (savedPOs) setPurchaseOrders(JSON.parse(savedPOs));
     if (savedShipments) setShipments(JSON.parse(savedShipments));
     if (savedInventory) setInventory(JSON.parse(savedInventory));
+    if (savedProducts) setProducts(JSON.parse(savedProducts));
   }, []);
+
+  // Persist to localStorage
+  useEffect(() => {
+    localStorage.setItem("scm_products", JSON.stringify(products));
+  }, [products]);
 
   // Persist to localStorage
   useEffect(() => {
@@ -102,6 +110,10 @@ export const SCMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
+  const addProduct = (product: Product) => {
+    setProducts(prev => [product, ...prev]);
+  };
+
   return (
     <SCMContext.Provider value={{
       suppliers,
@@ -116,7 +128,8 @@ export const SCMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       updatePOStatus,
       addShipment,
       updateShipmentStatus,
-      updateInventory
+      updateInventory,
+      addProduct
     }}>
       {children}
     </SCMContext.Provider>

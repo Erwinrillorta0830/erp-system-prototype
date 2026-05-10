@@ -7,8 +7,19 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, FileText, Eye, CheckCircle2, AlertCircle } from "lucide-react";
+import { Search, FileText, Eye, CheckCircle2, AlertCircle, Plus, Receipt, Printer } from "lucide-react";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter,
+  DialogTrigger,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SalesInvoice } from "@/modules/sales/types";
+import DocumentDetailModal, { printDocument } from "@/modules/sales/components/DocumentDetailModal";
 
 const STATUS_STYLE: Record<SalesInvoice["status"], string> = {
   DRAFT:          "bg-zinc-100   text-zinc-600   border-zinc-200",
@@ -22,6 +33,23 @@ export default function InvoiceList() {
   const { invoices, customers } = useSales();
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
+  const [isNewInvoiceOpen, setIsNewInvoiceOpen] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState<SalesInvoice | null>(null);
+
+  // Form State
+  const [newInvoice, setNewInvoice] = useState<{
+    customerId: string;
+    salesOrderRef: string;
+    issueDate: string;
+    dueDate: string;
+    channel: string;
+  }>({
+    customerId: "",
+    salesOrderRef: "",
+    issueDate: new Date().toISOString().split("T")[0],
+    dueDate: "",
+    channel: "WHOLESALE",
+  });
 
   const getCustomer = (id?: string) => id ? customers.find(c => c.id === id) : undefined;
 
@@ -45,9 +73,119 @@ export default function InvoiceList() {
           <h1 className="text-3xl font-black tracking-tight">Sales Invoices</h1>
           <p className="text-muted-foreground text-sm mt-0.5">Track billing, payments, and outstanding balances.</p>
         </div>
-        <Button className="bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20 font-black rounded-xl px-6">
-          <FileText className="mr-2 h-4 w-4" /> New Invoice
-        </Button>
+        <Dialog open={isNewInvoiceOpen} onOpenChange={setIsNewInvoiceOpen}>
+          <DialogTrigger render={
+            <Button className="bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/20 font-black rounded-xl px-6">
+              <FileText className="mr-2 h-4 w-4" /> New Invoice
+            </Button>
+          } />
+          <DialogContent className="sm:max-w-[550px] border-emerald-500/20 bg-card/95 backdrop-blur-xl rounded-[2rem]">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black tracking-tight text-emerald-600 flex items-center gap-2">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                  <Receipt className="h-5 w-5" />
+                </div>
+                Generate Invoice
+              </DialogTitle>
+              <DialogDescription className="font-medium text-muted-foreground">
+                Issue a new billing statement for confirmed sales or walk-in transactions.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid gap-6 py-4">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Billed To</label>
+                  <Select 
+                    value={newInvoice.customerId} 
+                    onValueChange={(val) => setNewInvoice(prev => ({ ...prev, customerId: val ?? "" }))}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl bg-background/50 border-emerald-500/10 focus:ring-emerald-500/20">
+                      <SelectValue placeholder="Select Customer (or Walk-in)" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-emerald-500/10 bg-card/95 backdrop-blur-xl">
+                      <SelectItem value="walkin" className="font-bold text-xs italic text-emerald-600">-- Walk-in Transaction --</SelectItem>
+                      {customers.map(c => (
+                        <SelectItem key={c.id} value={c.id} className="font-bold text-xs">
+                          {c.businessName} <span className="text-[9px] text-muted-foreground font-normal ml-2">({c.customerCode})</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Reference SO#</label>
+                    <Input 
+                      placeholder="e.g. SO-2024-001"
+                      value={newInvoice.salesOrderRef}
+                      onChange={(e) => setNewInvoice(prev => ({ ...prev, salesOrderRef: e.target.value }))}
+                      className="h-12 rounded-xl bg-background/50 border-emerald-500/10 focus-visible:ring-emerald-500/20 font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Channel</label>
+                    <Select 
+                      value={newInvoice.channel} 
+                      onValueChange={(val) => setNewInvoice(prev => ({ ...prev, channel: val ?? "" }))}
+                    >
+                      <SelectTrigger className="h-12 rounded-xl bg-background/50 border-emerald-500/10 focus:ring-emerald-500/20">
+                        <SelectValue placeholder="Select Channel" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-emerald-500/10 bg-card/95 backdrop-blur-xl">
+                        {["WHOLESALE", "RETAIL", "WALKIN"].map(ch => (
+                          <SelectItem key={ch} value={ch} className="font-bold text-xs">{ch}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Billing Date</label>
+                    <Input 
+                      type="date"
+                      value={newInvoice.issueDate}
+                      onChange={(e) => setNewInvoice(prev => ({ ...prev, issueDate: e.target.value }))}
+                      className="h-12 rounded-xl bg-background/50 border-emerald-500/10 focus-visible:ring-emerald-500/20 font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Payment Due Date</label>
+                    <Input 
+                      type="date"
+                      value={newInvoice.dueDate}
+                      onChange={(e) => setNewInvoice(prev => ({ ...prev, dueDate: e.target.value }))}
+                      className="h-12 rounded-xl bg-background/50 border-emerald-500/10 focus-visible:ring-emerald-500/20 font-bold"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 border-dashed">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[9px] font-black text-emerald-600 uppercase tracking-[0.2em]">Import Items from SO</p>
+                  <Button variant="link" className="h-auto p-0 text-[9px] font-black underline uppercase">Clear All</Button>
+                </div>
+                <p className="text-[11px] font-medium text-muted-foreground text-center py-4 border border-emerald-500/5 rounded-xl bg-white/30">
+                  Select a Sales Order to automatically pull line items and taxes.
+                </p>
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button variant="ghost" className="font-bold rounded-xl" onClick={() => setIsNewInvoiceOpen(false)}>Cancel</Button>
+              <Button 
+                className="bg-emerald-500 hover:bg-emerald-600 font-black rounded-xl px-8 shadow-lg shadow-emerald-500/20"
+                onClick={() => setIsNewInvoiceOpen(false)}
+              >
+                Finalize & Issue
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -102,7 +240,7 @@ export default function InvoiceList() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map(inv => {
+            {filtered.map((inv: SalesInvoice) => {
               const cust = getCustomer(inv.customerId);
               const isOverdue = inv.dueDate && new Date(inv.dueDate) < new Date() && inv.status !== "PAID";
               return (
@@ -137,14 +275,19 @@ export default function InvoiceList() {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className={`text-[9px] font-black uppercase h-5 ${STATUS_STYLE[inv.status]}`}>
+                    <Badge variant="outline" className={`text-[9px] font-black uppercase h-5 ${STATUS_STYLE[inv.status as SalesInvoice["status"]]}`}>
                       {inv.status.replace("_", " ")}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm" className="h-7 rounded-lg text-[10px] font-bold opacity-0 group-hover:opacity-100 hover:text-emerald-600">
-                      <Eye className="h-3 w-3 mr-1" /> View
-                    </Button>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button variant="ghost" size="sm" className="h-7 rounded-lg text-[10px] font-bold hover:text-emerald-600" onClick={() => setSelectedInvoice(inv)}>
+                        <Eye className="h-3 w-3 mr-1" /> View
+                      </Button>
+                      <Button variant="ghost" size="sm" className="h-7 rounded-lg text-[10px] font-bold" onClick={() => printDocument('invoice', inv, getCustomer(inv.customerId))}>
+                        <Printer className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               );
@@ -152,6 +295,14 @@ export default function InvoiceList() {
           </TableBody>
         </Table>
       </Card>
+
+      <DocumentDetailModal
+        open={!!selectedInvoice}
+        onClose={() => setSelectedInvoice(null)}
+        type="invoice"
+        doc={selectedInvoice}
+        customer={selectedInvoice ? getCustomer(selectedInvoice.customerId) : undefined}
+      />
     </div>
   );
 }

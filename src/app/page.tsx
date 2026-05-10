@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   BarChart3,
   Users,
@@ -14,7 +15,11 @@ import {
   Clock,
   Layers,
   Zap,
+  Settings,
 } from "lucide-react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 /* ─── Subsystem definitions ─── */
 const subsystems = [
@@ -25,12 +30,12 @@ const subsystems = [
     description: "Executive dashboards, KPI analytics, and real-time reporting across all business verticals.",
     href: "/bi",
     icon: BarChart3,
-    gradient: "from-violet-600 to-indigo-600",
-    glowColor: "rgba(139,92,246,0.35)",
-    shadowColor: "shadow-violet-500/20",
-    accentText: "text-violet-400",
-    accentBg: "bg-violet-500/10",
-    accentBorder: "border-violet-500/20",
+    gradient: "from-amber-600 to-yellow-500",
+    glowColor: "rgba(245,158,11,0.35)",
+    shadowColor: "shadow-amber-500/20",
+    accentText: "text-amber-400",
+    accentBg: "bg-amber-500/10",
+    accentBorder: "border-amber-500/20",
     stats: [
       { label: "Reports", value: "24" },
       { label: "KPIs", value: "48" },
@@ -43,12 +48,12 @@ const subsystems = [
     description: "Lead pipeline management, customer profiles, complaint tracking, and relationship analytics.",
     href: "/crm",
     icon: Users,
-    gradient: "from-sky-500 to-cyan-500",
-    glowColor: "rgba(14,165,233,0.35)",
-    shadowColor: "shadow-sky-500/20",
-    accentText: "text-sky-400",
-    accentBg: "bg-sky-500/10",
-    accentBorder: "border-sky-500/20",
+    gradient: "from-zinc-700 to-zinc-900",
+    glowColor: "rgba(251,191,36,0.25)",
+    shadowColor: "shadow-zinc-900/20",
+    accentText: "text-amber-400",
+    accentBg: "bg-amber-500/10",
+    accentBorder: "border-amber-500/20",
     stats: [
       { label: "Leads", value: "156" },
       { label: "Customers", value: "1.2K" },
@@ -61,10 +66,10 @@ const subsystems = [
     description: "Employee management, attendance tracking, payroll processing, and organizational oversight.",
     href: "/hrm",
     icon: UserCog,
-    gradient: "from-amber-500 to-orange-500",
-    glowColor: "rgba(245,158,11,0.35)",
-    shadowColor: "shadow-amber-500/20",
-    accentText: "text-amber-400",
+    gradient: "from-zinc-800 to-amber-900",
+    glowColor: "rgba(245,158,11,0.25)",
+    shadowColor: "shadow-amber-900/20",
+    accentText: "text-amber-500",
     accentBg: "bg-amber-500/10",
     accentBorder: "border-amber-500/20",
     stats: [
@@ -79,12 +84,12 @@ const subsystems = [
     description: "POS operations, sales orders, invoicing, fulfillment tracking, pricing, and returns management.",
     href: "/sales",
     icon: ShoppingCart,
-    gradient: "from-emerald-500 to-teal-500",
-    glowColor: "rgba(16,185,129,0.35)",
-    shadowColor: "shadow-emerald-500/20",
-    accentText: "text-emerald-400",
-    accentBg: "bg-emerald-500/10",
-    accentBorder: "border-emerald-500/20",
+    gradient: "from-amber-500 to-yellow-600",
+    glowColor: "rgba(251,191,36,0.35)",
+    shadowColor: "shadow-amber-500/20",
+    accentText: "text-amber-400",
+    accentBg: "bg-amber-500/10",
+    accentBorder: "border-amber-500/20",
     stats: [
       { label: "Orders", value: "340" },
       { label: "Revenue", value: "₱2.1M" },
@@ -97,12 +102,12 @@ const subsystems = [
     description: "Product catalog, purchase orders, shipment tracking, receiving, and inventory management.",
     href: "/scm",
     icon: Package,
-    gradient: "from-rose-500 to-pink-500",
-    glowColor: "rgba(244,63,94,0.35)",
-    shadowColor: "shadow-rose-500/20",
-    accentText: "text-rose-400",
-    accentBg: "bg-rose-500/10",
-    accentBorder: "border-rose-500/20",
+    gradient: "from-zinc-900 to-zinc-700",
+    glowColor: "rgba(251,191,36,0.2)",
+    shadowColor: "shadow-zinc-900/30",
+    accentText: "text-yellow-500",
+    accentBg: "bg-yellow-500/10",
+    accentBorder: "border-yellow-500/20",
     stats: [
       { label: "Products", value: "4.8K" },
       { label: "POs", value: "62" },
@@ -170,43 +175,76 @@ function DotGrid() {
 
 /* ─── Main Dashboard Page ─── */
 export default function MainDashboard() {
+  const router = useRouter();
+  const [zoomingModule, setZoomingModule] = useState<string | null>(null);
+
+  const handleModuleClick = (e: React.MouseEvent, href: string, id: string) => {
+    e.preventDefault();
+    setZoomingModule(id);
+    setTimeout(() => {
+      router.push(href);
+    }, 500);
+  };
+
   return (
-    <div className="relative min-h-screen bg-zinc-950 text-zinc-100 flex flex-col selection:bg-violet-500/30">
+    <div className={cn(
+      "relative min-h-screen bg-zinc-50 dark:bg-zinc-950 text-foreground flex flex-col selection:bg-amber-500/30 overflow-hidden transition-colors duration-300",
+      zoomingModule ? "pointer-events-none" : ""
+    )}>
+      {/* Motor Parts Background */}
+      <div 
+        className="absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none bg-repeat"
+        style={{ backgroundImage: 'url("/motor_parts_bg.png")', backgroundSize: '400px' }}
+      />
+      
       <DotGrid />
 
       {/* Ambient gradient blobs */}
-      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-violet-600/[0.04] blur-[120px] pointer-events-none" />
-      <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-sky-600/[0.04] blur-[120px] pointer-events-none" />
+      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-amber-600/[0.04] blur-[120px] pointer-events-none z-0" />
+      <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] rounded-full bg-yellow-600/[0.04] blur-[120px] pointer-events-none z-0" />
 
       {/* Header */}
-      <header className="relative z-10 border-b border-zinc-800/60 backdrop-blur-xl bg-zinc-950/80">
+      <header className="relative z-10 border-b border-border/60 backdrop-blur-xl bg-background/80">
         <div className="mx-auto max-w-7xl flex items-center justify-between px-8 h-16">
           <div className="flex items-center gap-3">
-            <div className="relative group">
-              <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 opacity-60 blur-sm group-hover:opacity-100 transition-opacity" />
-              <div className="relative w-9 h-9 rounded-xl bg-zinc-950 flex items-center justify-center border border-zinc-800">
-                <Layers className="h-5 w-5 text-violet-400" />
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative">
+                <div className="absolute -inset-2 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-500 opacity-0 blur-md group-hover:opacity-40 transition-opacity" />
+                <div className="relative h-12 w-auto flex items-center">
+                  <Image 
+                    src="/image.png" 
+                    alt="MMPA Logo" 
+                    width={180} 
+                    height={60} 
+                    className="h-10 w-auto object-contain"
+                    priority
+                  />
+                  <div className="absolute -right-2 -top-1">
+                    <Settings className="h-4 w-4 text-amber-500 animate-gear" />
+                  </div>
+                </div>
               </div>
-            </div>
-            <div>
-              <h1 className="text-lg font-bold tracking-tight leading-none">
-                Motor<span className="text-violet-400">ERP</span>
-              </h1>
-              <p className="text-[10px] text-zinc-500 font-medium tracking-widest uppercase">
-                Enterprise Platform
-              </p>
-            </div>
+              <div className="hidden sm:block ml-2">
+                <h1 className="text-2xl font-black tracking-tighter leading-none text-mmpa-gold">
+                  MMPA
+                </h1>
+                <p className="text-[10px] text-zinc-500 font-bold tracking-[0.2em] uppercase">
+                  Thai Parts & Accessories
+                </p>
+              </div>
+            </Link>
           </div>
 
           <LiveClock />
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-semibold text-emerald-400">All Systems Online</span>
+            <ThemeToggle />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20">
+              <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              <span className="text-xs font-semibold text-amber-400">Precision Systems Active</span>
             </div>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center text-xs font-bold text-white shadow-lg shadow-violet-500/20">
-              A
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-500 to-yellow-500 flex items-center justify-center text-xs font-bold text-white shadow-lg shadow-amber-500/20">
+              <Settings className="h-5 w-5 animate-gear" />
             </div>
           </div>
         </div>
@@ -224,10 +262,10 @@ export default function MainDashboard() {
                   <span className="text-[11px] font-semibold text-zinc-300">Command Center</span>
                 </div>
               </div>
-              <h2 className="text-3xl font-bold tracking-tight text-zinc-100">
+              <h2 className="text-3xl font-bold tracking-tight text-foreground">
                 System Modules
               </h2>
-              <p className="mt-2 text-sm text-zinc-500 max-w-lg leading-relaxed">
+              <p className="mt-2 text-sm text-muted-foreground max-w-lg leading-relaxed">
                 Select a module below to access its dashboard and management tools. 
                 All subsystems are interconnected for seamless data flow.
               </p>
@@ -236,15 +274,15 @@ export default function MainDashboard() {
             {/* Quick stats */}
             <div className="hidden lg:flex items-center gap-6">
               <QuickStat
-                icon={<Activity className="h-4 w-4 text-emerald-400" />}
-                label="Active Sessions"
-                value="12"
+                icon={<Settings className="h-4 w-4 text-amber-400 animate-gear" />}
+                label="System Load"
+                value="Minimal"
               />
               <div className="h-8 w-px bg-zinc-800" />
               <QuickStat
-                icon={<TrendingUp className="h-4 w-4 text-violet-400" />}
-                label="System Uptime"
-                value="99.9%"
+                icon={<TrendingUp className="h-4 w-4 text-amber-400" />}
+                label="Growth Index"
+                value="+24%"
               />
             </div>
           </div>
@@ -254,20 +292,24 @@ export default function MainDashboard() {
         <section className="mx-auto max-w-7xl w-full px-8 py-8 flex-1">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {subsystems.map((mod, i) => (
-              <Link
+              <a
                 key={mod.id}
                 href={mod.href}
+                onClick={(e) => handleModuleClick(e, mod.href, mod.id)}
                 className={`
-                  group relative flex flex-col rounded-2xl border border-zinc-800/60
-                  bg-zinc-900/50 backdrop-blur-sm
+                  group relative flex flex-col rounded-2xl border border-border/60
+                  bg-card/50 backdrop-blur-sm
                   transition-all duration-500 ease-out
-                  hover:border-zinc-700/80 hover:bg-zinc-900/80
+                  hover:border-amber-500/50 hover:bg-card/80
                   hover:shadow-2xl hover:-translate-y-1
                   ${mod.shadowColor}
                   ${i === 0 ? "lg:col-span-2 lg:row-span-1" : ""}
+                  ${zoomingModule === mod.id ? "animate-module-zoom z-50 shadow-[0_0_100px_rgba(251,191,36,0.5)]" : ""}
+                  ${zoomingModule && zoomingModule !== mod.id ? "opacity-20 scale-95 blur-sm" : ""}
                 `}
                 style={{
-                  animationDelay: `${i * 80}ms`,
+                  animationDelay: zoomingModule ? "0ms" : `${i * 80}ms`,
+                  transitionDuration: zoomingModule ? "600ms" : "500ms",
                 }}
                 id={`module-card-${mod.id}`}
               >
@@ -298,7 +340,7 @@ export default function MainDashboard() {
                         <mod.icon className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-base font-bold tracking-tight text-zinc-100 group-hover:text-white transition-colors">
+                        <h3 className="text-base font-bold tracking-tight text-foreground group-hover:text-amber-500 transition-colors">
                           {mod.name}
                         </h3>
                         <span className={`text-xs font-semibold ${mod.accentText} uppercase tracking-widest`}>
@@ -319,12 +361,12 @@ export default function MainDashboard() {
                   </div>
 
                   {/* Description */}
-                  <p className="text-sm text-zinc-500 leading-relaxed flex-1 group-hover:text-zinc-400 transition-colors">
+                  <p className="text-sm text-muted-foreground leading-relaxed flex-1 transition-colors">
                     {mod.description}
                   </p>
 
                   {/* Stats pills */}
-                  <div className="flex items-center gap-3 mt-5 pt-4 border-t border-zinc-800/60">
+                  <div className="flex items-center gap-3 mt-5 pt-4 border-t border-border/60">
                     {mod.stats.map((stat) => (
                       <div
                         key={stat.label}
@@ -345,18 +387,24 @@ export default function MainDashboard() {
                     </div>
                   </div>
                 </div>
-              </Link>
+              </a>
             ))}
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="mx-auto max-w-7xl w-full px-8 py-6 border-t border-zinc-800/40">
+        <footer className="mx-auto max-w-7xl w-full px-8 py-6 border-t border-border/40">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Layers className="h-4 w-4 text-zinc-600" />
+              <Image 
+                src="/image.png" 
+                alt="Logo" 
+                width={16} 
+                height={16} 
+                className="opacity-40 grayscale"
+              />
               <span className="text-xs text-zinc-600 font-medium">
-                MotorERP v1.0 — Motor Parts Distribution Platform
+                MMPA ERP v1.0 — Motor Parts Distribution Platform
               </span>
             </div>
             <div className="flex items-center gap-4 text-xs text-zinc-600">
@@ -383,12 +431,12 @@ function QuickStat({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-9 h-9 rounded-lg bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center">
+      <div className="w-9 h-9 rounded-lg bg-muted border border-border flex items-center justify-center">
         {icon}
       </div>
       <div>
-        <p className="text-xs text-zinc-500 font-medium">{label}</p>
-        <p className="text-sm font-bold tabular-nums text-zinc-200">{value}</p>
+        <p className="text-xs text-muted-foreground font-medium">{label}</p>
+        <p className="text-sm font-bold tabular-nums text-foreground">{value}</p>
       </div>
     </div>
   );

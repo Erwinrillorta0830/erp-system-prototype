@@ -15,7 +15,8 @@ import {
   ArrowDownCircle, 
   RefreshCcw,
   User,
-  ExternalLink
+  ExternalLink,
+  AlertTriangle
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

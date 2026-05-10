@@ -1,0 +1,90 @@
+﻿src/app/layout.tsx(22,24): error TS2304: Cannot find name 'Metadata'.
+src/modules/bi/components/TrendChart.tsx(63,15): error TS2322: Type '(value: number) => [string, string]' is not assignable to type 'Formatter<ValueType, NameType> & ((value: ValueType, name: NameType, item: TooltipPayloadEntry, index: number, payload: TooltipPayload) => ReactNode | [...])'.
+  Type '(value: number) => [string, string]' is not assignable to type 'Formatter<ValueType, NameType>'.
+    Types of parameters 'value' and 'value' are incompatible.
+      Type 'ValueType | undefined' is not assignable to type 'number'.
+        Type 'undefined' is not assignable to type 'number'.
+src/modules/bi/views/SalesAnalytics.tsx(85,19): error TS2322: Type '(value: number) => string' is not assignable to type 'Formatter<ValueType, NameType> & ((value: ValueType, name: NameType, item: TooltipPayloadEntry, index: number, payload: TooltipPayload) => ReactNode | [...])'.
+  Type '(value: number) => string' is not assignable to type 'Formatter<ValueType, NameType>'.
+    Types of parameters 'value' and 'value' are incompatible.
+      Type 'ValueType | undefined' is not assignable to type 'number'.
+        Type 'undefined' is not assignable to type 'number'.
+src/modules/crm/views/Customer360.tsx(146,18): error TS2304: Cannot find name 'LayoutDashboard'.
+src/modules/crm/views/CustomerList.tsx(129,57): error TS2304: Cannot find name 'cn'.
+src/modules/crm/views/QuotationList.tsx(80,17): error TS2552: Cannot find name 'Input'. Did you mean 'oninput'?
+src/modules/hrm/components/EmployeeForm.tsx(111,14): error TS2304: Cannot find name 'Separator'.
+src/modules/hrm/components/EmployeeForm.tsx(120,65): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/modules/hrm/components/EmployeeForm.tsx(136,65): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/modules/hrm/components/EmployeeForm.tsx(152,65): error TS2322: Type 'string | null' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/modules/hrm/components/EmployeeForm.tsx(184,27): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & DialogCloseProps'.
+src/modules/hrm/components/FilingForm.tsx(40,7): error TS2304: Cannot find name 'addLeave'.
+src/modules/hrm/components/FilingForm.tsx(92,67): error TS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.
+src/modules/hrm/components/FilingForm.tsx(165,27): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & DialogCloseProps'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & DialogCloseProps'.
+src/modules/hrm/context/hrm-context.tsx(112,26): error TS2741: Property 'addLeave' is missing in type '{ employees: Employee[]; branches: Branch[]; departments: Department[]; positions: Position[]; attendanceLogs: AttendanceLog[]; leaveRequests: LeaveRequest[]; ... 9 more ...; updateRequestStatus: (type: "leave" | "overtime", id: string, status: RequestStatus) => void; }' but required in type 'HRMContextType'.
+src/modules/hrm/HRMModule.tsx(169,21): error TS2552: Cannot find name 'Input'. Did you mean 'oninput'?
+src/modules/hrm/views/HRMSettings.tsx(231,18): error TS2304: Cannot find name 'AlertCircle'.
+src/modules/hrm/views/HRMSettings.tsx(254,15): error TS2552: Cannot find name 'Download'. Did you mean 'onload'?
+src/modules/scm/hooks/use-scm.ts(4,25): error TS2304: Cannot find name 'useSCM'.
+src/modules/scm/hooks/use-scm.ts(9,42): error TS2304: Cannot find name 'useSCM'.
+src/modules/scm/hooks/use-scm.ts(14,54): error TS2304: Cannot find name 'useSCM'.
+src/modules/scm/hooks/use-scm.ts(19,64): error TS2304: Cannot find name 'useSCM'.
+src/modules/scm/hooks/use-scm.ts(24,60): error TS2304: Cannot find name 'useSCM'.
+src/modules/scm/views/InventoryView.tsx(25,56): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/InventoryView.tsx(26,55): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/InventoryView.tsx(27,60): error TS7006: Parameter 'w' implicitly has an 'any' type.
+src/modules/scm/views/InventoryView.tsx(29,42): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/modules/scm/views/InventoryView.tsx(108,31): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/modules/scm/views/InventoryView.tsx(108,37): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(41,42): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(42,44): error TS7006: Parameter 'po' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(45,44): error TS7006: Parameter 'po' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(46,18): error TS7006: Parameter 'line' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(49,34): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(50,26): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(51,29): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(55,44): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(55,49): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(55,116): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(56,45): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(56,50): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(93,36): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(208,41): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(208,47): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+src/modules/scm/views/LandedCostAllocation.tsx(209,60): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/MovementHistory.tsx(35,56): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/MovementHistory.tsx(36,55): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/MovementHistory.tsx(37,53): error TS7006: Parameter 'w' implicitly has an 'any' type.
+src/modules/scm/views/MovementHistory.tsx(44,131): error TS2304: Cannot find name 'AlertTriangle'.
+src/modules/scm/views/PhysicalInventory.tsx(36,53): error TS7006: Parameter 'w' implicitly has an 'any' type.
+src/modules/scm/views/PhysicalInventory.tsx(38,47): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/modules/scm/views/PhysicalInventory.tsx(124,46): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/modules/scm/views/PhysicalInventory.tsx(124,52): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+src/modules/scm/views/PhysicalInventory.tsx(125,53): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/POManagement.tsx(28,58): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/modules/scm/views/POManagement.tsx(133,36): error TS7006: Parameter 'po' implicitly has an 'any' type.
+src/modules/scm/views/ProductCatalog.tsx(29,44): error TS7006: Parameter 'product' implicitly has an 'any' type.
+src/modules/scm/views/ProductCatalog.tsx(35,59): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/modules/scm/views/ProductCatalog.tsx(36,48): error TS7006: Parameter 'u' implicitly has an 'any' type.
+src/modules/scm/views/ProductCatalog.tsx(101,38): error TS7006: Parameter 'product' implicitly has an 'any' type.
+src/modules/scm/views/ProductCatalog.tsx(119,44): error TS2322: Type '{ children: Element; asChild: true; }' is not assignable to type 'IntrinsicAttributes & Props<unknown>'.
+  Property 'asChild' does not exist on type 'IntrinsicAttributes & Props<unknown>'.
+src/modules/scm/views/ReceivingView.tsx(26,47): error TS7006: Parameter 'po' implicitly has an 'any' type.
+src/modules/scm/views/ReceivingView.tsx(31,36): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/ReceivingView.tsx(35,22): error TS7006: Parameter 'line' implicitly has an 'any' type.
+src/modules/scm/views/ReceivingView.tsx(71,34): error TS7006: Parameter 'po' implicitly has an 'any' type.
+src/modules/scm/views/ReceivingView.tsx(84,36): error TS7006: Parameter 'line' implicitly has an 'any' type.
+src/modules/scm/views/ReceivingView.tsx(84,42): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+src/modules/scm/views/SCMDashboard.tsx(35,50): error TS7006: Parameter 'acc' implicitly has an 'any' type.
+src/modules/scm/views/SCMDashboard.tsx(35,55): error TS7006: Parameter 'po' implicitly has an 'any' type.
+src/modules/scm/views/SCMDashboard.tsx(36,42): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/modules/scm/views/SCMDashboard.tsx(37,44): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/modules/scm/views/SCMDashboard.tsx(129,28): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/modules/scm/views/ShipmentTracking.tsx(69,25): error TS7006: Parameter 'shipment' implicitly has an 'any' type.
+src/modules/scm/views/StockMovements.tsx(28,56): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/modules/scm/views/SupplierDirectory.tsx(52,25): error TS7006: Parameter 'supplier' implicitly has an 'any' type.

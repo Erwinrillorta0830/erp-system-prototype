@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useQuotations, useCustomers } from "../hooks/use-crm";
+import { Quotation } from "../types";
 import { 
   Card, CardContent, CardHeader, CardTitle, CardDescription 
 } from "@/components/ui/card";
@@ -21,11 +22,42 @@ import {
   Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter, 
+  DialogTrigger,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const QuotationList: React.FC = () => {
   const { quotations } = useQuotations();
   const { customers } = useCustomers();
+  const [isNewQuoteOpen, setIsNewQuoteOpen] = useState(false);
+
+  // Form State
+  const [newQuote, setNewQuote] = useState<{
+    customerId: string;
+    validUntil: string;
+    assignedSalesRep: string;
+    notes: string;
+  }>({
+    customerId: "",
+    validUntil: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+    assignedSalesRep: "Current User",
+    notes: "",
+  });
 
   const getCustomerName = (id: string) => customers.find(c => c.id === id)?.businessName || "Unknown Customer";
 
@@ -48,9 +80,97 @@ const QuotationList: React.FC = () => {
           <h1 className="text-3xl font-bold tracking-tight">Quotations & Estimates</h1>
           <p className="text-muted-foreground">Manage and track sent proposals for wholesale accounts.</p>
         </div>
-        <Button className="bg-primary px-6 shadow-lg shadow-primary/20 font-black rounded-xl">
-          <Plus className="mr-2 h-4 w-4" /> New Quotation
-        </Button>
+        <Dialog open={isNewQuoteOpen} onOpenChange={setIsNewQuoteOpen}>
+          <DialogTrigger render={
+            <Button className="bg-primary px-6 shadow-lg shadow-primary/20 font-black rounded-xl">
+              <Plus className="mr-2 h-4 w-4" /> New Quotation
+            </Button>
+          } />
+          <DialogContent className="sm:max-w-[550px] border-primary/20 bg-card/95 backdrop-blur-xl rounded-[2rem]">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black tracking-tight text-primary flex items-center gap-2">
+                <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
+                  <FileText className="h-5 w-5" />
+                </div>
+                Create Estimate
+              </DialogTitle>
+              <DialogDescription className="font-medium text-muted-foreground">
+                Draft a new price proposal for specialized motor part bulk orders.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid gap-6 py-4">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Target Account</label>
+                  <Select 
+                    value={newQuote.customerId}
+                    onValueChange={(val) => setNewQuote(prev => ({ ...prev, customerId: val ?? "" }))}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl bg-background/50 border-primary/10">
+                      <SelectValue placeholder="Select Customer" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                      {customers.map(c => (
+                        <SelectItem key={c.id} value={c.id} className="font-bold text-xs">{c.businessName}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Expiry Date</label>
+                    <Input 
+                      type="date"
+                      value={newQuote.validUntil}
+                      onChange={(e) => setNewQuote(prev => ({ ...prev, validUntil: e.target.value }))}
+                      className="h-12 rounded-xl bg-background/50 border-primary/10 font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Account Manager</label>
+                    <Input 
+                      disabled
+                      value={newQuote.assignedSalesRep}
+                      className="h-12 rounded-xl bg-muted/50 border-primary/10 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Special Instructions / Notes</label>
+                  <Input 
+                    placeholder="e.g. Thailand Import Lead time adjustment..."
+                    value={newQuote.notes}
+                    onChange={(e) => setNewQuote(prev => ({ ...prev, notes: e.target.value }))}
+                    className="h-12 rounded-xl bg-background/50 border-primary/10 font-bold"
+                  />
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 border-dashed">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em]">Estimate Line Items</p>
+                  <Button variant="link" className="h-auto p-0 text-[9px] font-black underline uppercase text-primary">Browse Parts</Button>
+                </div>
+                <p className="text-[11px] font-medium text-muted-foreground text-center py-4">
+                  0 Items added to estimate. Add parts from catalog to calculate totals.
+                </p>
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button variant="ghost" className="font-bold rounded-xl" onClick={() => setIsNewQuoteOpen(false)}>Cancel</Button>
+              <Button 
+                className="bg-primary hover:bg-primary/90 font-black rounded-xl px-8 shadow-lg shadow-primary/20"
+                onClick={() => setIsNewQuoteOpen(false)}
+              >
+                Issue Estimate
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
@@ -98,7 +218,7 @@ const QuotationList: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {quotations.map((quote) => (
+              {quotations.map((quote: Quotation) => (
                 <TableRow key={quote.id} className="hover:bg-primary/5 border-primary/5 group cursor-pointer">
                   <TableCell className="font-black text-primary group-hover:underline">{quote.quoteNo}</TableCell>
                   <TableCell className="font-bold text-xs">{getCustomerName(quote.customerId)}</TableCell>

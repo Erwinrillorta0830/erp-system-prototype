@@ -13,6 +13,22 @@ import {
   ArrowUpDown, Download, Plus 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter,
+  DialogTrigger,
+  DialogDescription
+} from "@/components/ui/dialog";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,8 +39,55 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const ProductCatalog: React.FC = () => {
-  const { products, categories, uoms } = useProducts();
+  const { products, categories, uoms, addProduct } = useProducts();
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAddPartOpen, setIsAddPartOpen] = useState(false);
+
+  // Form State
+  const [newPart, setNewPart] = useState<{
+    sku: string;
+    partNumberThai: string;
+    description: string;
+    categoryId: string;
+    uomId: string;
+    weight: string;
+    brand: string;
+    srp: string;
+  }>({
+    sku: "",
+    partNumberThai: "",
+    description: "",
+    categoryId: "",
+    uomId: "",
+    weight: "0",
+    brand: "",
+    srp: "0",
+  });
+
+  const handleSavePart = () => {
+    if (!newPart.sku || !newPart.description) return;
+    
+    addProduct({
+      id: `prod-${Date.now()}`,
+      sku: newPart.sku,
+      partNumberThai: newPart.partNumberThai,
+      description: newPart.description,
+      categoryId: newPart.categoryId,
+      uomId: newPart.uomId,
+      weight: parseFloat(newPart.weight) || 0,
+      brand: newPart.brand || "Generic",
+      srp: parseFloat(newPart.srp) || 0,
+      dimensions: { length: 0, width: 0, height: 0 },
+      minOrderQty: 10,
+      primarySupplierId: "sup-001"
+    });
+    
+    setIsAddPartOpen(false);
+    setNewPart({
+      sku: "", partNumberThai: "", description: "", 
+      categoryId: "", uomId: "", weight: "0", brand: "", srp: "0"
+    });
+  };
 
   const filteredProducts = products.filter(product => 
     product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -46,9 +109,138 @@ const ProductCatalog: React.FC = () => {
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" /> Export
           </Button>
-          <Button className="bg-primary hover:bg-primary/90">
-            <Plus className="mr-2 h-4 w-4" /> Add Part
-          </Button>
+          <Dialog open={isAddPartOpen} onOpenChange={setIsAddPartOpen}>
+            <DialogTrigger render={
+              <Button className="bg-primary hover:bg-primary/90">
+                <Plus className="mr-2 h-4 w-4" /> Add Part
+              </Button>
+            } />
+            <DialogContent className="sm:max-w-[600px] border-primary/20 bg-card/95 backdrop-blur-xl rounded-[2rem]">
+              <DialogHeader>
+                <DialogTitle className="text-2xl font-black tracking-tight text-primary flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-2xi bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20">
+                    <Package className="h-5 w-5" />
+                  </div>
+                  Register New Part
+                </DialogTitle>
+                <DialogDescription className="font-medium text-muted-foreground">
+                  Add a new motor part imported from Thailand to your master catalog.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-6 py-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">PH SKU</label>
+                    <Input 
+                      placeholder="e.g. SKU-123456"
+                      value={newPart.sku}
+                      onChange={(e) => setNewPart(prev => ({ ...prev, sku: e.target.value }))}
+                      className="h-12 rounded-xl bg-background/50 border-primary/10 focus-visible:ring-primary/20 font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Thai Part Number</label>
+                    <Input 
+                      placeholder="e.g. TH-998-X"
+                      value={newPart.partNumberThai}
+                      onChange={(e) => setNewPart(prev => ({ ...prev, partNumberThai: e.target.value }))}
+                      className="h-12 rounded-xl bg-background/50 border-primary/10 focus-visible:ring-primary/20 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Part Description</label>
+                  <Input 
+                    placeholder="Full descriptive name of the part..."
+                    value={newPart.description}
+                    onChange={(e) => setNewPart(prev => ({ ...prev, description: e.target.value }))}
+                    className="h-12 rounded-xl bg-background/50 border-primary/10 focus-visible:ring-primary/20 font-bold"
+                  />
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Brand</label>
+                    <Input 
+                      placeholder="e.g. Honda, Yamaha, Brembo..."
+                      value={newPart.brand}
+                      onChange={(e) => setNewPart(prev => ({ ...prev, brand: e.target.value }))}
+                      className="h-12 rounded-xl bg-background/50 border-primary/10 focus-visible:ring-primary/20 font-bold"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Retail Price (SRP)</label>
+                    <Input 
+                      type="number"
+                      placeholder="e.g. 1500"
+                      value={newPart.srp}
+                      onChange={(e) => setNewPart(prev => ({ ...prev, srp: e.target.value }))}
+                      className="h-12 rounded-xl bg-background/50 border-primary/10 focus-visible:ring-primary/20 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Category</label>
+                    <Select 
+                      value={newPart.categoryId}
+                      onValueChange={(val) => setNewPart(prev => ({ ...prev, categoryId: val ?? "" }))}
+                    >
+                      <SelectTrigger className="h-12 rounded-xl bg-background/50 border-primary/10 focus:ring-primary/20">
+                        <SelectValue placeholder="Select Category" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                        {categories.map(c => (
+                          <SelectItem key={c.id} value={c.id} className="font-bold text-xs">{c.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">UoM</label>
+                      <Select 
+                        value={newPart.uomId}
+                        onValueChange={(val) => setNewPart(prev => ({ ...prev, uomId: val ?? "" }))}
+                      >
+                        <SelectTrigger className="h-12 rounded-xl bg-background/50 border-primary/10 focus:ring-primary/20">
+                          <SelectValue placeholder="Unit" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl border-primary/10 bg-card/95 backdrop-blur-xl">
+                          {uoms.map(u => (
+                            <SelectItem key={u.id} value={u.id} className="font-bold text-xs">{u.abbreviation}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Weight (kg)</label>
+                      <Input 
+                        type="number"
+                        value={newPart.weight}
+                        onChange={(e) => setNewPart(prev => ({ ...prev, weight: e.target.value }))}
+                        className="h-12 rounded-xl bg-background/50 border-primary/10 focus-visible:ring-primary/20 font-bold"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter className="gap-2">
+                <Button variant="ghost" className="font-bold rounded-xl" onClick={() => setIsAddPartOpen(false)}>Cancel</Button>
+                <Button 
+                  className="bg-primary hover:bg-primary/90 font-black rounded-xl px-8 shadow-lg shadow-primary/20"
+                  onClick={handleSavePart}
+                  disabled={!newPart.sku || !newPart.description}
+                >
+                  Save to Catalog
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -116,11 +308,11 @@ const ProductCatalog: React.FC = () => {
                   <TableCell className="text-right">{product.weight} kg</TableCell>
                   <TableCell>
                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
+                      <DropdownMenuTrigger render={
                         <Button variant="ghost" className="h-8 w-8 p-0">
                           <MoreVertical className="h-4 w-4" />
                         </Button>
-                      </DropdownMenuTrigger>
+                      } />
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem>View Details</DropdownMenuItem>

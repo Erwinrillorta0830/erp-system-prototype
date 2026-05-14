@@ -6,11 +6,9 @@ import { cn } from "@/lib/utils";
 import { 
   Dialog, 
   DialogContent, 
-  DialogHeader, 
   DialogTitle, 
   DialogFooter, 
-  DialogTrigger,
-  DialogDescription
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { 
   Select, 
@@ -64,7 +62,7 @@ const CustomerList: React.FC = () => {
     address: "",
     city: "",
     creditLimit: "50000",
-    assignedSalesRep: "Current User",
+    assignedSalesRep: "Current User"
   });
 
   const getStatusColor = (status: string) => {

@@ -13,19 +13,17 @@ import {
   Phone, 
   MapPin, 
   Mail, 
-  Globe, 
   CreditCard, 
   History,
   TrendingUp,
   MessageSquare,
   FileText,
   Calendar,
-  MoreVertical,
-  ChevronRight,
   ShieldCheck,
   AlertTriangle,
   ArrowLeft,
-  UserPlus
+  UserPlus,
+  LayoutDashboard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -132,7 +130,7 @@ const Customer360: React.FC<Props> = ({ customerId }) => {
             </CardHeader>
             <CardContent className="pb-4">
               <p className="text-[11px] font-medium text-orange-950/60 leading-snug">
-                Customer hasn't ordered in 28 days. Usual frequency is every 14 days. Retention follow-up suggested.
+                Customer hasn&apos;t ordered in 28 days. Usual frequency is every 14 days. Retention follow-up suggested.
               </p>
             </CardContent>
           </Card>
@@ -220,7 +218,7 @@ const Customer360: React.FC<Props> = ({ customerId }) => {
                                <Badge variant="outline" className="text-[8px] font-black uppercase py-0 h-4">{activity.type}</Badge>
                             </div>
                             <p className="text-[10px] font-bold text-muted-foreground">{activity.scheduledDate} • {activity.staffId}</p>
-                            {activity.notes && <p className="text-[11px] mt-2 text-muted-foreground leading-relaxed italic">"{activity.notes}"</p>}
+                            {activity.notes && <p className="text-[11px] mt-2 text-muted-foreground leading-relaxed italic">&quot;{activity.notes}&quot;</p>}
                           </div>
                         </div>
                       ))}

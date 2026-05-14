@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { 
   History, 
   Search, 
@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 
 const MovementHistory: React.FC = () => {
   const { products } = useProducts();
-  const { inventory, warehouses } = useInventory();
+  const { warehouses } = useInventory();
 
   // Mock movement data
   const mockHistory = [

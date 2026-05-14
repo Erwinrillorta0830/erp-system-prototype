@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useQuotations, useCustomers } from "../hooks/use-crm";
 import { Quotation } from "../types";
 import { 
-  Card, CardContent, CardHeader, CardTitle, CardDescription 
+  Card, CardContent, CardHeader 
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -12,8 +12,6 @@ import {
   Search, 
   Filter, 
   Plus, 
-  MoreVertical, 
-  Calendar, 
   ArrowRight,
   CheckCircle2,
   Clock,
@@ -52,12 +50,12 @@ const QuotationList: React.FC = () => {
     validUntil: string;
     assignedSalesRep: string;
     notes: string;
-  }>({
+  }>(() => ({
     customerId: "",
     validUntil: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
     assignedSalesRep: "Current User",
-    notes: "",
-  });
+    notes: ""
+  }));
 
   const getCustomerName = (id: string) => customers.find(c => c.id === id)?.businessName || "Unknown Customer";
 

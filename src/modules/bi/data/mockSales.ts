@@ -1,5 +1,5 @@
 import { SalesSummary } from "../types/bi.types";
-import { addDays, format, subDays } from "date-fns";
+import { addDays, format } from "date-fns";
 
 // Realistic constants for a motor parts business
 const branches = ["br_manila_main", "br_cebu_hub", "br_davao_branch"];

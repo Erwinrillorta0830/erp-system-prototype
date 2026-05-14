@@ -12,7 +12,20 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Helper scripts (CJS, not part of the app)
+    "fix-unused.js",
+    "fix-quotes.js",
+    "extract-errors.js",
   ]),
+  // Allow _ prefix to silence unused-var warnings
+  {
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_" },
+      ],
+    },
+  },
 ]);
 
 export default eslintConfig;

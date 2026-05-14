@@ -16,7 +16,6 @@ import {
   Plus,
   Search,
   ChevronRight,
-  TrendingUp,
   CreditCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -60,7 +59,7 @@ const SupplierDirectory: React.FC = () => {
     phone: "",
     address: "",
     leadTime: "14",
-    paymentTerms: "NET 30",
+    paymentTerms: "NET 30"
   });
 
   return (

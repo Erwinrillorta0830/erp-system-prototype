@@ -14,9 +14,7 @@ import {
   Truck, 
   FileCheck,
   Percent,
-  ChevronRight,
-  Save,
-  Info
+  Save
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -187,7 +185,7 @@ const LandedCostAllocation: React.FC = () => {
             <CardHeader className="flex flex-row items-center justify-between pb-4">
               <div>
                 <CardTitle className="text-lg font-black">Shipment Tally & Distribution</CardTitle>
-                <CardDescription className="font-medium text-xs">Calculated burden per line item based on "{allocationMethod}" method.</CardDescription>
+                <CardDescription className="font-medium text-xs">Calculated burden per line item based on &quot;{allocationMethod}&quot; method.</CardDescription>
               </div>
               <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary font-black uppercase text-[10px] tracking-widest py-1">
                 {currentShipment?.shipmentNumber}

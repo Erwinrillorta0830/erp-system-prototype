@@ -10,10 +10,8 @@ import {
   ShoppingCart,
   Package,
   ArrowRight,
-  Activity,
   TrendingUp,
   Clock,
-  Layers,
   Zap,
   Settings,
 } from "lucide-react";

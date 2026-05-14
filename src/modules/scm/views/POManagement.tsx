@@ -14,8 +14,7 @@ import {
   Filter, 
   FileText,
   Clock,
-  CheckCircle2,
-  XCircle
+  CheckCircle2
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -54,7 +53,7 @@ const POManagement: React.FC = () => {
     orderDate: new Date().toISOString().split("T")[0],
     expectedDate: "",
     currency: "PHP",
-    paymentTerms: "COD",
+    paymentTerms: "COD"
   });
 
   const getSupplierName = (id: string) => suppliers.find(s => s.id === id)?.name || id;

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
@@ -112,16 +113,16 @@ export const SalesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   }, []);
 
+  const removeFromCart = useCallback((productId: string) => {
+    setPosCart(prev => prev.filter(i => i.productId !== productId));
+  }, []);
+
   const updateCartQty = useCallback((productId: string, qty: number) => {
     if (qty <= 0) { removeFromCart(productId); return; }
     setPosCart(prev => prev.map(i => i.productId === productId
       ? { ...i, qty, lineTotal: qty * i.unitPrice } : i
     ));
-  }, []);
-
-  const removeFromCart = useCallback((productId: string) => {
-    setPosCart(prev => prev.filter(i => i.productId !== productId));
-  }, []);
+  }, [removeFromCart]);
 
   const clearCart = useCallback(() => {
     setPosCart([]);

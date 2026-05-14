@@ -6,7 +6,7 @@ import {
   Settings, LogOut, Search, Bell, User as UserIcon,
   ChevronRight, Menu, Layers
 } from 'lucide-react';
-import { HRMProvider, useHRM } from './context/hrm-context';
+import { HRMProvider } from './context/hrm-context';
 import HRDashboard from './views/Dashboard';
 import EmployeeList from './views/EmployeeList';
 import EmployeeDetails from './views/EmployeeDetails';
@@ -17,6 +17,7 @@ import ScheduleManager from './views/ScheduleManager';
 import FilingForm from './components/FilingForm';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 type HRMView = 'dashboard' | 'directory' | 'attendance' | 'requests' | 'settings' | 'details' | 'shifts';
@@ -33,7 +34,7 @@ export default function HRMModule() {
     setIsFilingOpen(true);
   };
 
-  const navigateToDetails = (id: string) => {
+  const _navigateToDetails = (id: string) => {
     setSelectedEmployeeId(id);
     setActiveView('details');
   };

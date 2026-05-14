@@ -1,6 +1,7 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   User, Mail, Phone, MapPin, Calendar, 
   Briefcase, Building2, CreditCard, FileText, 
@@ -15,14 +16,13 @@ import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import { useHRM } from '../context/hrm-context';
 import { cn } from '@/lib/utils';
-import { Employee } from '../types/hrm.types';
 
 interface EmployeeDetailsProps {
   employeeId: string;
   onBack?: () => void;
 }
 
-export default function EmployeeDetails({ employeeId, onBack }: EmployeeDetailsProps) {
+export default function EmployeeDetails({ employeeId, onBack: _onBack }: EmployeeDetailsProps) {
   const { 
     employees, branches, departments, positions, 
     attendanceLogs, leaveRequests, overtimeRequests, incidents 

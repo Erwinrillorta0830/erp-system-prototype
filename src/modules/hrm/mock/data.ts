@@ -1,7 +1,7 @@
 import { 
   Employee, Branch, Department, Position, AttendanceLog, 
-  AttendanceSummary, LeaveRequest, OvertimeRequest, 
-  Holiday, EmployeeDocument, IncidentRecord 
+  LeaveRequest, OvertimeRequest, 
+  Holiday, IncidentRecord 
 } from '../types/hrm.types';
 
 export const MOCK_BRANCHES: Branch[] = [

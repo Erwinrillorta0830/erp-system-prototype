@@ -3,19 +3,14 @@
 import React from "react";
 import { useOpportunities, useCustomers } from "../hooks/use-crm";
 import { 
-  Card, CardContent, CardHeader, CardTitle, CardDescription 
+  Card, CardContent, CardHeader, CardTitle 
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { 
   Target, 
-  Search, 
   Plus, 
   MoreVertical, 
   Calendar, 
-  DollarSign, 
-  Trophy,
-  Clock,
-  ArrowRight
+  Trophy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

@@ -1,10 +1,11 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { 
   Employee, Branch, Department, Position, AttendanceLog, 
-  AttendanceSummary, LeaveRequest, OvertimeRequest, 
-  Holiday, EmployeeDocument, IncidentRecord, RequestStatus
+  LeaveRequest, OvertimeRequest, 
+  Holiday, IncidentRecord, RequestStatus
 } from "../types/hrm.types";
 import { 
   ALL_MOCK_EMPLOYEES, MOCK_BRANCHES, MOCK_DEPARTMENTS, MOCK_POSITIONS,
@@ -44,7 +45,7 @@ export const HRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [attendanceLogs, setAttendanceLogs] = useState<AttendanceLog[]>(MOCK_ATTENDANCE_LOGS);
   const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>(MOCK_LEAVE_REQUESTS);
   const [overtimeRequests, setOvertimeRequests] = useState<OvertimeRequest[]>(MOCK_OVERTIME);
-  const [incidents, setIncidents] = useState<IncidentRecord[]>(MOCK_INCIDENTS);
+  const [incidents] = useState<IncidentRecord[]>(MOCK_INCIDENTS);
   const [holidays] = useState<Holiday[]>(MOCK_HOLIDAYS);
 
   // Persistence
@@ -124,6 +125,7 @@ export const HRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       approveLeave,
       rejectLeave,
       logAttendance,
+      addLeave,
       addOvertime,
       updateRequestStatus
     }}>

@@ -112,7 +112,7 @@ interface ModuleLayoutProps {
 export function ModuleLayout({
   children,
   moduleName,
-  moduleIcon: Icon,
+  moduleIcon: _Icon,
   navItems,
   themeColor = "primary",
   searchPlaceholder = "Search...",
@@ -174,7 +174,7 @@ export function ModuleLayout({
         {/* Navigation */}
         <nav className="flex-1 space-y-1 p-4 overflow-y-auto custom-scrollbar">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+            const _isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             // If the item is just the base path (e.g., /scm), only count as active if it's exact match
             // or if we're deeper in that module. This is slightly imperfect but works for ERP structure.
             const isBaseActive = item.href.split('/').length <= 2 

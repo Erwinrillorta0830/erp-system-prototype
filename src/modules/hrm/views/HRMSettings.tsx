@@ -2,17 +2,16 @@
 
 import React, { useState } from 'react';
 import { 
-  Building2, Briefcase, MapPin, Calendar, 
-  CreditCard, Plus, Trash2, Edit2, Shield,
-  ChevronRight, Save, Globe, Landmark
+  Briefcase, MapPin, 
+  Plus, Trash2, Edit2, Shield,
+  ChevronRight, Save, Globe, Landmark,
+  AlertCircle, Download
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useHRM } from '../context/hrm-context';
 import { cn } from '@/lib/utils';
-import { Separator } from '@/components/ui/separator';
 
 type SettingsTab = 'org' | 'branches' | 'payroll-ref' | 'holidays' | 'access';
 
@@ -107,7 +106,7 @@ function SettingsNavItem({ icon, label, active, onClick }: { icon: React.ReactNo
   );
 }
 
-function OrgSettings({ depts, positions }: { depts: any[], positions: any[] }) {
+function OrgSettings({ depts, positions }: { depts: { id: string; code: string; name: string }[], positions: { id: string; level: string; title: string }[] }) {
   return (
     <div className="space-y-6">
        <Card className="rounded-[2rem] border-zinc-200 shadow-sm overflow-hidden">
@@ -172,7 +171,7 @@ function OrgSettings({ depts, positions }: { depts: any[], positions: any[] }) {
   );
 }
 
-function BranchSettings({ branches }: { branches: any[] }) {
+function BranchSettings({ branches }: { branches: { id: string; name: string; location: string; type: string }[] }) {
   return (
     <Card className="rounded-[2rem] border-zinc-200 shadow-sm overflow-hidden">
        <CardHeader className="p-8">
@@ -242,7 +241,7 @@ function PayrollReferenceSettings() {
   );
 }
 
-function HolidaySettings({ holidays }: { holidays: any[] }) {
+function HolidaySettings({ holidays }: { holidays: { id: string; date: string; name: string; type: string }[] }) {
   return (
     <Card className="rounded-[2rem] border-zinc-200 shadow-sm overflow-hidden">
        <CardHeader className="p-8 flex flex-row items-center justify-between">

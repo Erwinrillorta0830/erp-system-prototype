@@ -1,9 +1,10 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import React, { useState } from 'react';
 import { 
-  Users, Search, Filter, UserPlus, 
-  MoreVertical, Phone, MapPin, ArrowRight,
+  Search, Filter, UserPlus, 
+  MoreVertical, Phone, ArrowRight,
   Briefcase, Building2, BadgeCheck, Mail,
   LayoutGrid, List
 } from 'lucide-react';
@@ -30,7 +31,7 @@ export default function EmployeeList() {
     setIsFormOpen(true);
   };
 
-  const handleEdit = (employee: Employee) => {
+  const _handleEdit = (employee: Employee) => {
     setEditingEmployee(employee);
     setIsFormOpen(true);
   };
@@ -207,7 +208,7 @@ export default function EmployeeList() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-xl bg-zinc-100 flex items-center justify-center font-black text-xs text-blue-600 overflow-hidden border border-zinc-200">
-                           {employee.avatarUrl ? <img src={employee.avatarUrl} className="w-full h-full object-cover" /> : employee.firstName[0]}
+                           {employee.avatarUrl ? <img alt="" src={employee.avatarUrl} className="w-full h-full object-cover" /> : employee.firstName[0]}
                         </div>
                         <div>
                           <p className="text-sm font-bold text-zinc-900 leading-none">{employee.fullName}</p>
@@ -260,7 +261,7 @@ function StatCard({ label, value, sub, color = 'blue' }: { label: string, value:
     blue: 'border-blue-100 bg-blue-50/20 text-blue-600',
     emerald: 'border-emerald-100 bg-emerald-50/20 text-emerald-600',
     amber: 'border-amber-100 bg-amber-50/20 text-amber-600',
-    rose: 'border-rose-100 bg-rose-50/20 text-rose-600',
+    rose: 'border-rose-100 bg-rose-50/20 text-rose-600'
   };
 
   return (

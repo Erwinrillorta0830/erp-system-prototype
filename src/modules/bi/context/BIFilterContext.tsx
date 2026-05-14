@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { DashboardFilterState, SalesChannel } from "../types/bi.types";
+import { DashboardFilterState } from "../types/bi.types";
 import { format, subDays } from "date-fns";
 
 interface BIFilterContextValue {

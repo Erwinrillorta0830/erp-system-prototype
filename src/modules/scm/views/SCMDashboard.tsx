@@ -5,8 +5,7 @@ import {
   useProducts, 
   useInventory, 
   usePurchaseOrders, 
-  useShipments,
-  useSuppliers
+  useShipments
 } from "../hooks/use-scm";
 import { 
   Card, CardContent, CardHeader, CardTitle, CardDescription 
@@ -15,7 +14,6 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Truck, 
   Package, 
-  ShoppingCart, 
   DollarSign, 
   TrendingUp,
   AlertCircle,
@@ -30,7 +28,6 @@ const SCMDashboard: React.FC = () => {
   const { inventory } = useInventory();
   const { purchaseOrders } = usePurchaseOrders();
   const { shipments } = useShipments();
-  const { suppliers } = useSuppliers();
 
   const totalStockValue = purchaseOrders.reduce((acc, po) => acc + (po.totalAmount * po.exchangeRate), 0);
   const lowStockCount = inventory.filter((i) => i.qtyOnHand <= i.reorderPoint).length;

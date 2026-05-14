@@ -107,7 +107,7 @@ const ActivityCenter: React.FC = () => {
                          </div>
                          {activity.notes && (
                             <p className="text-[11px] mt-2 text-muted-foreground italic leading-relaxed border-l-2 border-primary/20 pl-3">
-                               "{activity.notes}"
+                               &quot;{activity.notes}&quot;
                             </p>
                          )}
                       </div>

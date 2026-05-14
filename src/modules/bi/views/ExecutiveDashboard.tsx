@@ -69,7 +69,7 @@ export const ExecutiveDashboard: React.FC = () => {
                    </tr>
                  </thead>
                  <tbody>
-                   {topProducts.map((p, idx) => (
+                   {topProducts.map((p, _idx) => (
                      <tr key={p.id} className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
                        <td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100">{p.id}</td>
                        <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">₱ {p.revenue.toLocaleString()}</td>

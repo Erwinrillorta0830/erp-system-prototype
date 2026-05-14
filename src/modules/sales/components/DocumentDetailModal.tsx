@@ -1,14 +1,14 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React from "react";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
+  Dialog, DialogContent, DialogTitle
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
 import { Printer, X, FileText, ShoppingCart, Receipt } from "lucide-react";
 import { SalesQuote, SalesOrder, SalesInvoice, SalesCustomer } from "@/modules/sales/types";
@@ -47,16 +47,16 @@ function buildPrintHTML(
   const customerCity = customer?.city ?? "";
   const customerCode = customer?.customerCode ?? "";
 
-  const icons: Record<DocType, string> = {
+  const _icons: Record<DocType, string> = {
     quote:   "📋",
     order:   "📦",
-    invoice: "🧾",
+    invoice: "🧾"
   };
 
   const titles: Record<DocType, string> = {
     quote:   "SALES QUOTATION",
     order:   "SALES ORDER",
-    invoice: "SALES INVOICE",
+    invoice: "SALES INVOICE"
   };
 
   const lineRows = lines.map((line: any) => `
@@ -202,11 +202,11 @@ export function printDocument(
 const TYPE_META: Record<DocType, { label: string; color: string; Icon: React.ElementType }> = {
   quote:   { label: "Quotation",    color: "text-blue-600",    Icon: FileText    },
   order:   { label: "Sales Order",  color: "text-emerald-600", Icon: ShoppingCart },
-  invoice: { label: "Invoice",      color: "text-violet-600",  Icon: Receipt     },
+  invoice: { label: "Invoice",      color: "text-violet-600",  Icon: Receipt     }
 };
 
 export default function DocumentDetailModal({
-  open, onClose, type, doc, customer,
+  open, onClose, type, doc, customer
 }: DocumentDetailModalProps) {
   if (!doc) return null;
 

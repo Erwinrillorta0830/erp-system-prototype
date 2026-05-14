@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Package, 
   CheckCircle2, 
   AlertCircle, 
   ArrowDownToLine,
@@ -17,7 +16,6 @@ import {
   ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 const ReceivingView: React.FC = () => {
   const { purchaseOrders, updatePOStatus } = usePurchaseOrders();

@@ -33,7 +33,6 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Plus } from "lucide-react";
 
 const InventoryView: React.FC = () => {
   const { inventory, warehouses } = useInventory();
@@ -51,7 +50,7 @@ const InventoryView: React.FC = () => {
     productId: "",
     fromWarehouseId: "",
     toWarehouseId: "",
-    qty: "0",
+    qty: "0"
   });
 
   const [physicalCount, setPhysicalCount] = useState<{
@@ -59,7 +58,7 @@ const InventoryView: React.FC = () => {
     countedDate: string;
   }>({
     warehouseId: "",
-    countedDate: new Date().toISOString().split("T")[0],
+    countedDate: new Date().toISOString().split("T")[0]
   });
 
   const getProductName = (id: string) => products.find(p => p.id === id)?.description || id;
@@ -215,7 +214,7 @@ const InventoryView: React.FC = () => {
                 </div>
 
                 <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/10 text-[11px] font-medium text-amber-700 leading-relaxed italic">
-                  Note: Initializing a count will capture a snapshot of the current "On Hand" ledger for variance calculation.
+                  Note: Initializing a count will capture a snapshot of the current &quot;On Hand&quot; ledger for variance calculation.
                 </div>
               </div>
 
@@ -295,7 +294,7 @@ const InventoryView: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {inventory.map((item, idx) => {
+              {inventory.map((item) => {
                 const isLow = item.qtyOnHand <= item.reorderPoint;
                 return (
                   <TableRow key={`${item.productId}-${item.warehouseId}`} className="hover:bg-primary/5 border-primary/5">

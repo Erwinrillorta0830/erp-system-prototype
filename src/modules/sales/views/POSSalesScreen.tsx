@@ -8,10 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   ShoppingCart, Search, Plus, Minus, Trash2, X,
-  CreditCard, Banknote, Smartphone, Tag, ChevronRight,
-  CheckCircle2, Package, ArrowRight,
+  CreditCard, Banknote, Smartphone, Tag, 
+  CheckCircle2, Package
 } from "lucide-react";
-import { SalesProduct } from "@/modules/sales/types";
 
 const PAYMENT_METHODS = [
   { id: "CASH",          label: "Cash",          icon: Banknote    },
@@ -24,7 +23,7 @@ export default function POSSalesScreen() {
   const {
     products, posCart, posWalkInName, setPosWalkInName,
     addToCart, updateCartQty, removeFromCart, clearCart, checkoutCart,
-    posTransactions,
+    posTransactions
   } = useSales();
 
   const [search, setSearch] = useState("");
@@ -49,7 +48,7 @@ export default function POSSalesScreen() {
 
   const handleCheckout = () => {
     if (posCart.length === 0) return;
-    const txNo = checkoutCart(selectedPayment as any, parseFloat(tendered) || undefined);
+    const txNo = checkoutCart(selectedPayment as "CASH" | "GCASH" | "CARD" | "BANK_TRANSFER", parseFloat(tendered) || undefined);
     setLastTxNo(txNo);
     setShowSuccess(true);
     setTendered("");

@@ -2,20 +2,17 @@
 
 import React from "react";
 import { 
-  useCustomers, useLeads, useOpportunities, 
+  useCustomers, useOpportunities, 
   useActivities, useComplaints, useQuotations 
 } from "../hooks/use-crm";
 import { 
   Card, CardContent, CardHeader, CardTitle, CardDescription 
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { 
-  LayoutDashboard, 
   Users, 
   Target, 
   TrendingUp, 
   AlertCircle, 
-  CheckCircle2, 
   Clock, 
   FileText,
   Calendar,
@@ -29,7 +26,6 @@ import { Separator } from "@/components/ui/separator";
 
 const CRMDashboard: React.FC = () => {
   const { customers } = useCustomers();
-  const { leads } = useLeads();
   const { opportunities } = useOpportunities();
   const { activities } = useActivities();
   const { complaints } = useComplaints();
@@ -205,7 +201,7 @@ const CRMDashboard: React.FC = () => {
                        <span className="text-xs font-black uppercase tracking-wider">Churn Risk</span>
                     </div>
                     <p className="text-[11px] font-medium text-orange-950/60 leading-snug">
-                       <strong>Davao Parts Center</strong> hasn't purchased in 45 days. 
+                       <strong>Davao Parts Center</strong> hasn&apos;t purchased in 45 days. 
                     </p>
                     <Button variant="link" className="p-0 h-auto text-orange-600 font-bold text-[10px] uppercase mt-2">Schedule Rescue Call <ArrowRight className="ml-1 h-3 w-3" /></Button>
                  </div>

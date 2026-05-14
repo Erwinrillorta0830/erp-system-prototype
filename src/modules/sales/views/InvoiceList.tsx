@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import { useSales } from "@/modules/sales/context/sales-context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, FileText, Eye, CheckCircle2, AlertCircle, Plus, Receipt, Printer } from "lucide-react";
+import { Search, FileText, Eye, AlertCircle, Receipt, Printer } from "lucide-react";
 import { 
   Dialog, 
   DialogContent, 
@@ -26,7 +26,7 @@ const STATUS_STYLE: Record<SalesInvoice["status"], string> = {
   ISSUED:         "bg-blue-50    text-blue-600   border-blue-200",
   PARTIALLY_PAID: "bg-amber-50   text-amber-600  border-amber-200",
   PAID:           "bg-emerald-50 text-emerald-600 border-emerald-200",
-  VOIDED:         "bg-rose-50    text-rose-600   border-rose-200",
+  VOIDED:         "bg-rose-50    text-rose-600   border-rose-200"
 };
 
 export default function InvoiceList() {
@@ -48,7 +48,7 @@ export default function InvoiceList() {
     salesOrderRef: "",
     issueDate: new Date().toISOString().split("T")[0],
     dueDate: "",
-    channel: "WHOLESALE",
+    channel: "WHOLESALE"
   });
 
   const getCustomer = (id?: string) => id ? customers.find(c => c.id === id) : undefined;

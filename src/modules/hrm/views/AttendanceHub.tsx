@@ -1,12 +1,13 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import React, { useState } from 'react';
 import { 
   Calendar, Clock, UserCheck, AlertCircle, 
-  Search, Download, Filter, ChevronLeft, ChevronRight,
-  MoreVertical, CheckCircle, XCircle, MapPin
+  Search, Download, ChevronLeft, ChevronRight,
+  MoreVertical, XCircle, MapPin
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -26,7 +27,7 @@ import { format } from 'date-fns';
 
 export default function AttendanceHub() {
   const { employees, attendanceLogs, branches } = useHRM();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate] = useState(new Date());
   const [search, setSearch] = useState('');
   const [branchFilter, setBranchFilter] = useState('all');
   const [isManualEntryOpen, setIsManualEntryOpen] = useState(false);
@@ -37,7 +38,7 @@ export default function AttendanceHub() {
     date: new Date().toISOString().split("T")[0],
     timeIn: "08:00",
     timeOut: "17:00",
-    source: "MANUAL_ADJUSTMENT",
+    source: "MANUAL_ADJUSTMENT"
   });
 
   const dateStr = format(selectedDate, 'yyyy-MM-dd');
@@ -154,7 +155,7 @@ export default function AttendanceHub() {
                 </div>
 
                 <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 text-[11px] font-medium text-blue-700 leading-relaxed italic">
-                  Note: Manual entries are flagged for HR review and timestamped with the current administrator's credentials.
+                  Note: Manual entries are flagged for HR review and timestamped with the current administrator&apos;s credentials.
                 </div>
               </div>
 
@@ -241,7 +242,7 @@ export default function AttendanceHub() {
                         <td className="px-8 py-5">
                            <div className="flex items-center gap-3">
                               <div className="h-12 w-12 rounded-2xl bg-zinc-100 overflow-hidden border border-zinc-200 flex items-center justify-center font-black text-blue-600 shadow-inner">
-                                 {employee.avatarUrl ? <img src={employee.avatarUrl} className="w-full h-full object-cover" /> : employee.firstName[0]}
+                                 {employee.avatarUrl ? <img alt="" src={employee.avatarUrl} className="w-full h-full object-cover" /> : employee.firstName[0]}
                               </div>
                               <div>
                                  <p className="text-sm font-black text-zinc-900 leading-none">{employee.fullName}</p>
@@ -299,7 +300,7 @@ function AttendanceStatCard({ label, value, icon, color, trend }: { label: strin
     zinc: 'bg-zinc-950 text-white border-zinc-800',
     emerald: 'bg-white text-emerald-600 border-zinc-200',
     amber: 'bg-white text-amber-600 border-zinc-200',
-    rose: 'bg-white text-rose-600 border-zinc-200',
+    rose: 'bg-white text-rose-600 border-zinc-200'
   };
 
   return (

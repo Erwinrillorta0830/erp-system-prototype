@@ -2,13 +2,13 @@
 
 import React, { useState } from "react";
 import { useSales } from "@/modules/sales/context/sales-context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
-import { Search, Plus, Truck, Package, AlertTriangle, CheckCircle2, X, Printer, Eye } from "lucide-react";
+import { Search, Plus, Package, AlertTriangle, CheckCircle2, Printer, Eye } from "lucide-react";
 import { 
   Dialog, 
   DialogContent, 
@@ -38,7 +38,7 @@ const CHANNEL_STYLE: Record<string, string> = {
 };
 
 export default function SalesOrderList() {
-  const { orders, customers, updateOrderStatus } = useSales();
+  const { orders, customers } = useSales();
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [filterChannel, setFilterChannel] = useState("ALL");

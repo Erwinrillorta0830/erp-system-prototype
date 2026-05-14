@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  TrendingUp, TrendingDown, ShoppingCart, ClipboardList,
-  FileText, Truck, RotateCcw, Zap, ArrowRight,
+  TrendingUp, ShoppingCart, ClipboardList,
+  RotateCcw, Zap, ArrowRight,
   AlertCircle, Trophy, Users, Package,
 } from "lucide-react";
 
@@ -157,7 +157,7 @@ export default function SalesDashboard() {
                 ⚠️ <strong>SO-2026-0088</strong> has 50 pcs of Piston Kit still pending release (backorder from Thailand).
               </div>
               <div className="text-[11px] font-medium text-amber-950/70 leading-snug">
-                ⚠️ <strong>QT-2026-0044</strong> expired. Customer Metro Manila Auto hasn't re-ordered yet.
+                ⚠️ <strong>QT-2026-0044</strong> expired. Customer Metro Manila Auto hasn&apos;t re-ordered yet.
               </div>
               <Button variant="link" className="p-0 h-auto text-amber-600 text-[10px] uppercase font-black mt-1">
                 Review All Alerts <ArrowRight className="ml-1 h-3 w-3" />

@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Search, Package, Filter, MoreVertical, 
-  ArrowUpDown, Download, Plus 
+  Download, Plus 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -35,7 +35,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
 const ProductCatalog: React.FC = () => {
@@ -61,7 +61,7 @@ const ProductCatalog: React.FC = () => {
     uomId: "",
     weight: "0",
     brand: "",
-    srp: "0",
+    srp: "0"
   });
 
   const handleSavePart = () => {

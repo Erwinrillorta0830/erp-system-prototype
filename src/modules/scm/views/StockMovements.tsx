@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { useInventory, useProducts } from "../hooks/use-scm";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -13,8 +12,7 @@ import {
   ArrowRight,
   History,
   AlertTriangle,
-  CheckCircle2,
-  Clock
+  CheckCircle2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,10 +20,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const StockMovements: React.FC = () => {
-  const { products } = useProducts();
-  const { warehouses } = useInventory();
-
-  const getProductName = (id: string) => products.find(p => p.id === id)?.description || id;
 
   const mockTransfers = [
     { id: "trf-001", number: "TRF-2026-001", from: "Main Hub", to: "Cebu Branch", date: "2026-04-12", status: "IN_TRANSIT", items: 15 },

@@ -2,14 +2,13 @@
 
 import React, { useState } from 'react';
 import { 
-  Calendar, Clock, Users, ArrowRight, 
+  Clock, 
   MapPin, Plus, Save, RefreshCw, Layers,
-  ChevronRight, Dot
+  ChevronRight
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import { useHRM } from '../context/hrm-context';
 import { cn } from '@/lib/utils';
 
@@ -145,7 +144,7 @@ function ShiftCard({ name, time, label, color }: { name: string, time: string, l
     blue: 'border-blue-100 bg-white group-hover:border-blue-300 text-blue-600',
     emerald: 'border-emerald-100 bg-white group-hover:border-emerald-300 text-emerald-600',
     indigo: 'border-indigo-100 bg-white group-hover:border-indigo-300 text-indigo-600',
-    rose: 'border-rose-100 bg-white group-hover:border-rose-300 text-rose-600',
+    rose: 'border-rose-100 bg-white group-hover:border-rose-300 text-rose-600'
   };
 
   return (

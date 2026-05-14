@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { 
-  Calendar, Clock, CheckCircle2, XCircle, 
-  Search, Filter, MoreVertical, ThumbsUp, ThumbsDown,
-  User, Briefcase, ChevronRight, AlertCircle, FileText
+  Calendar, Clock, 
+  Search, Filter, ThumbsUp, ThumbsDown,
+  ChevronRight, FileText
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -22,7 +22,6 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import { useHRM } from '../context/hrm-context';
-import { cn } from '@/lib/utils';
 import { RequestStatus } from '../types/hrm.types';
 
 export default function RequestCenter() {
@@ -304,7 +303,7 @@ export default function RequestCenter() {
                                    </div>
                                 </div>
                                 <div className="p-4 bg-zinc-50 rounded-2xl italic text-xs text-zinc-600 border border-zinc-100">
-                                   "{request.reason}"
+                                   &quot;{request.reason}&quot;
                                 </div>
                              </div>
 
@@ -359,7 +358,7 @@ export default function RequestCenter() {
                                     <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {ot.date}</span>
                                     <span className="flex items-center gap-1 text-blue-600"><Clock className="w-3.5 h-3.5" /> {ot.hours} Hours</span>
                                  </div>
-                                 <p className="text-[11px] mt-2 italic text-zinc-400">"{ot.reason}"</p>
+                                 <p className="text-[11px] mt-2 italic text-zinc-400">&quot;{ot.reason}&quot;</p>
                               </div>
                            </div>
                            

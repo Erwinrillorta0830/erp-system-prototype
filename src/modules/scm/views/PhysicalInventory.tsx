@@ -12,20 +12,17 @@ import {
   Download, 
   AlertCircle,
   CheckCircle2,
-  Table as TableIcon,
-  ChevronRight,
-  Calculator
+  Table as TableIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 
 const PhysicalInventory: React.FC = () => {
   const { products } = useProducts();
   const { inventory, warehouses } = useInventory();
   
-  const [selectedWarehouse, setSelectedWarehouse] = useState("wh-main");
+  const [selectedWarehouse] = useState("wh-main");
 
   // Mock physical count sessions
   const mockSessions = [

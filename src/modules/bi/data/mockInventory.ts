@@ -1,5 +1,5 @@
 import { InventoryKpiSummary } from "../types/bi.types";
-import { format, subDays, addDays } from "date-fns";
+import { format, addDays } from "date-fns";
 
 const warehouses = ["wh_manila_main", "wh_valenzuela_hub", "wh_cebu_hub", "wh_davao_hub"];
 
@@ -8,7 +8,14 @@ export const generateMockInventory = (): InventoryKpiSummary[] => {
   const baseDate = new Date("2026-01-01");
 
   // Track state so it looks realistic over time
-  const currentState: Record<string, any> = {};
+  const currentState: Record<string, {
+    baseValue: number;
+    healthyItems: number;
+    lowStock: number;
+    outOfStock: number;
+    overstock: number;
+    deadStockValue: number;
+  }> = {};
 
   warehouses.forEach(wh => {
     currentState[wh] = {

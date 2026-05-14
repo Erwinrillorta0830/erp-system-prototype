@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useHRM } from '../context/hrm-context';
-import { Calendar, Clock, FileText, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 
 interface FilingFormProps {
   open: boolean;
@@ -18,7 +18,7 @@ interface FilingFormProps {
 }
 
 export default function FilingForm({ open, onOpenChange, type }: FilingFormProps) {
-  const { employees, leaveRequests, overtimeRequests, updateRequestStatus, addOvertime } = useHRM();
+  const { employees, addOvertime, addLeave } = useHRM();
   
   // For mock simulation, we assume user is the first regular employee
   const mockUser = employees.find(e => e.status === 'Regular');
@@ -29,7 +29,7 @@ export default function FilingForm({ open, onOpenChange, type }: FilingFormProps
     endDate: new Date().toISOString().split('T')[0],
     reason: '',
     hours: '1',
-    date: new Date().toISOString().split('T')[0],
+    date: new Date().toISOString().split('T')[0]
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -40,7 +40,7 @@ export default function FilingForm({ open, onOpenChange, type }: FilingFormProps
       addLeave({
         id: `leave-${Date.now()}`,
         employeeId: mockUser.id,
-        leaveType: formData.leaveType as any,
+        leaveType: formData.leaveType as "Vacation" | "Sick" | "Emergency",
         startDate: formData.startDate,
         endDate: formData.endDate,
         reason: formData.reason,
@@ -65,7 +65,7 @@ export default function FilingForm({ open, onOpenChange, type }: FilingFormProps
       endDate: new Date().toISOString().split('T')[0],
       reason: '',
       hours: '1',
-      date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString().split('T')[0]
     });
   };
 
@@ -89,7 +89,7 @@ export default function FilingForm({ open, onOpenChange, type }: FilingFormProps
                   <label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Leave Type</label>
                   <Select 
                     value={formData.leaveType} 
-                    onValueChange={v => setFormData({...formData, leaveType: v})}
+                    onValueChange={v => setFormData({...formData, leaveType: v ?? 'Vacation'})}
                   >
                     <SelectTrigger className="h-12 rounded-xl bg-zinc-50 border-zinc-100 font-bold">
                       <SelectValue />
@@ -162,8 +162,8 @@ export default function FilingForm({ open, onOpenChange, type }: FilingFormProps
           </div>
 
           <DialogFooter className="p-6 bg-zinc-50 flex items-center gap-3">
-             <DialogClose asChild>
-                <Button type="button" variant="ghost" className="rounded-xl font-bold h-12 px-6">Discard</Button>
+             <DialogClose render={<Button type="button" variant="ghost" className="rounded-xl font-bold h-12 px-6" />}>
+                Discard
              </DialogClose>
              <Button type="submit" className={cn("rounded-xl font-black h-12 px-8 shadow-lg", 
                 type === 'leave' ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-100' : 'bg-orange-600 hover:bg-orange-700 shadow-orange-100')}>

@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { useBIFilters } from "../context/BIFilterContext";
 import { MOCK_SALES_DATA } from "../data/mockSales";
-import { SalesSummary } from "../types/bi.types";
 
 export const useSalesAnalytics = () => {
   const { filters } = useBIFilters();
@@ -60,7 +59,7 @@ export const useSalesAnalytics = () => {
     const channelSales = {
         wholesale: rawData.filter(d => d.channel === 'wholesale').reduce((acc, d) => acc + d.total_sales_php, 0),
         retail: rawData.filter(d => d.channel === 'retail').reduce((acc, d) => acc + d.total_sales_php, 0),
-        'walk-in': rawData.filter(d => d.channel === 'walk-in').reduce((acc, d) => acc + d.total_sales_php, 0),
+        'walk-in': rawData.filter(d => d.channel === 'walk-in').reduce((acc, d) => acc + d.total_sales_php, 0)
     };
 
     return {
@@ -71,7 +70,7 @@ export const useSalesAnalytics = () => {
       trendData,
       topProducts,
       channelSales,
-      rawDataCount: rawData.length,
+      rawDataCount: rawData.length
     };
   }, [filters]);
 

@@ -12,11 +12,7 @@ import {
   Plus, 
   Filter, 
   AlertCircle, 
-  CheckCircle2, 
-  Clock, 
-  User,
   ArrowRight,
-  MoreVertical,
   Flag
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -159,7 +155,7 @@ const ComplaintsHub: React.FC = () => {
             </div>
             <div>
                <h3 className="text-xl font-black">Escalation Protocol Enabled</h3>
-               <p className="text-xs font-medium opacity-60 mt-1 max-w-sm">Tickets categorized as "Damaged" or "Wrong Part" are automatically flagged to the Sales Manager if not resolved within 48 hours.</p>
+               <p className="text-xs font-medium opacity-60 mt-1 max-w-sm">Tickets categorized as &quot;Damaged&quot; or &quot;Wrong Part&quot; are automatically flagged to the Sales Manager if not resolved within 48 hours.</p>
             </div>
          </div>
          <Button className="rounded-xl font-black px-8 bg-zinc-700 text-white hover:bg-zinc-600 dark:bg-zinc-100 dark:text-black transition-all">Review Escalations</Button>

@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import { useSales } from "@/modules/sales/context/sales-context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, Plus, ArrowRight, FileText, CheckCircle2, XCircle, Clock, RefreshCw, ClipboardList, Printer } from "lucide-react";
+import { Search, Plus, ArrowRight, FileText, CheckCircle2, RefreshCw, ClipboardList, Printer } from "lucide-react";
 import { 
   Dialog, 
   DialogContent, 
@@ -44,11 +44,11 @@ export default function QuotationList() {
     customerId: string;
     validUntil: string;
     assignedSalesRep: string;
-  }>({
+  }>(() => ({
     customerId: "",
     validUntil: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
     assignedSalesRep: "Current User",
-  });
+  }));
 
   const getCustomer = (id: string) => customers.find(c => c.id === id);
 

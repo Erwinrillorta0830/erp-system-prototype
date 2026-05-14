@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useShipments, usePurchaseOrders } from "../hooks/use-scm";
+import { useShipments } from "../hooks/use-scm";
 import { 
   Card, CardContent, CardHeader, CardTitle, CardDescription 
 } from "@/components/ui/card";
@@ -11,9 +11,7 @@ import {
   Ship, 
   Anchor, 
   MapPin, 
-  Calendar, 
   Info,
-  ChevronRight,
   Package,
   ArrowUpRight,
   CheckCircle2,
@@ -21,11 +19,9 @@ import {
   AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 const ShipmentTrackingView: React.FC = () => {
   const { shipments } = useShipments();
-  const { purchaseOrders } = usePurchaseOrders();
 
   const getStatusIcon = (status: string) => {
     switch (status) {

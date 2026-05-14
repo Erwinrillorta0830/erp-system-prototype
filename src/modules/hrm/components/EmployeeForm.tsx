@@ -22,7 +22,7 @@ interface EmployeeFormProps {
 export default function EmployeeForm({ open, onOpenChange, employee }: EmployeeFormProps) {
   const { addEmployee, updateEmployee, branches, departments, positions } = useHRM();
   
-  const [formData, setFormData] = useState<Partial<Employee>>(employee || {
+  const [formData, setFormData] = useState<Partial<Employee>>(() => employee || {
     firstName: '',
     lastName: '',
     email: '',
@@ -32,7 +32,7 @@ export default function EmployeeForm({ open, onOpenChange, employee }: EmployeeF
     positionId: '',
     status: 'Probationary',
     hireDate: new Date().toISOString().split('T')[0],
-    employeeCode: `EMP-${new Date().getFullYear()}-${Math.floor(Math.random() * 900 + 100)}`,
+    employeeCode: `EMP-${new Date().getFullYear()}-${Math.floor(Math.random() * 900 + 100)}`
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -40,7 +40,7 @@ export default function EmployeeForm({ open, onOpenChange, employee }: EmployeeF
     const fullEmployee = {
       ...formData,
       id: employee?.id || `emp-${Date.now()}`,
-      fullName: `${formData.firstName} ${formData.lastName}`,
+      fullName: `${formData.firstName} ${formData.lastName}`
     } as Employee;
 
     if (employee) {

@@ -4,19 +4,14 @@ import React, { useState } from "react";
 import { useLeads } from "../hooks/use-crm";
 import { Lead } from "../types";
 import { 
-  Card, CardContent, CardHeader, CardTitle, CardDescription 
+  Card, CardContent, CardHeader 
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   UserPlus, 
   Search, 
   Filter, 
-  MoreVertical, 
-  Phone, 
-  MessageSquare, 
-  Calendar,
   CheckCircle2,
-  XCircle,
   Flag,
   ArrowRight
 } from "lucide-react";
@@ -41,7 +36,7 @@ import {
 } from "@/components/ui/select";
 
 const LeadsList: React.FC = () => {
-  const { leads, updateLeadStatus } = useLeads();
+  const { leads } = useLeads();
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
 
   // Form State
@@ -60,7 +55,7 @@ const LeadsList: React.FC = () => {
     phone: "",
     source: "WEBSITE",
     interestLevel: "MEDIUM",
-    assignedTo: "Current User",
+    assignedTo: "Current User"
   });
 
   const getStatusColor = (status: string) => {

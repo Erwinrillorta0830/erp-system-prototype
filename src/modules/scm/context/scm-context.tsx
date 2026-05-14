@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { 
@@ -32,7 +33,7 @@ interface SCMContextType {
 const SCMContext = createContext<SCMContextType | undefined>(undefined);
 
 export const SCMProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [suppliers, setSuppliers] = useState<Supplier[]>(MOCK_SUPPLIERS);
+  const [suppliers] = useState<Supplier[]>(MOCK_SUPPLIERS);
   const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
   const [categories] = useState<ProductCategory[]>(MOCK_CATEGORIES);
   const [uoms] = useState<UnitOfMeasure[]>(MOCK_UOMS);

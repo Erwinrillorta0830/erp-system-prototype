@@ -2,8 +2,7 @@
 
 import React from "react";
 import { useSales } from "@/modules/sales/context/sales-context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Truck, Package, CheckCircle2, Clock, AlertTriangle, ChevronRight } from "lucide-react";
@@ -14,7 +13,7 @@ const STATUS_CONFIG: Record<FulfillmentRecord["status"], { label: string; color:
   PREPARING: { label: "Preparing", color: "bg-blue-50   text-blue-600   border-blue-200",   icon: <Package className="h-4 w-4 text-blue-500" />   },
   RELEASED:  { label: "Released",  color: "bg-violet-50 text-violet-600 border-violet-200", icon: <Truck className="h-4 w-4 text-violet-500" />   },
   COMPLETED: { label: "Completed", color: "bg-emerald-50 text-emerald-600 border-emerald-200", icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" /> },
-  CANCELLED: { label: "Cancelled", color: "bg-rose-50   text-rose-600   border-rose-200",   icon: <AlertTriangle className="h-4 w-4 text-rose-500" /> },
+  CANCELLED: { label: "Cancelled", color: "bg-rose-50   text-rose-600   border-rose-200",   icon: <AlertTriangle className="h-4 w-4 text-rose-500" /> }
 };
 
 export default function FulfillmentBoard() {
@@ -26,7 +25,7 @@ export default function FulfillmentBoard() {
   const grouped = (["PENDING", "PREPARING", "RELEASED", "COMPLETED"] as const).map(s => ({
     status: s,
     config: STATUS_CONFIG[s],
-    items: fulfillments.filter(f => f.status === s),
+    items: fulfillments.filter(f => f.status === s)
   }));
 
   return (
@@ -68,7 +67,7 @@ export default function FulfillmentBoard() {
                 </div>
               ) : g.items.map(ff => {
                 const cust  = getCustomer(ff.customerId);
-                const order = getOrder(ff.salesOrderRef);
+                const _order = getOrder(ff.salesOrderRef);
                 const totalOrdered  = ff.lines.reduce((s, l) => s + l.orderedQty, 0);
                 const totalReleased = ff.lines.reduce((s, l) => s + l.releasedQty, 0);
                 const pct = totalOrdered > 0 ? Math.round((totalReleased / totalOrdered) * 100) : 0;

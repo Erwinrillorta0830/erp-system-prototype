@@ -12,7 +12,7 @@ import {
 } from "recharts";
 
 interface TrendChartProps {
-  data: any[];
+  data: Record<string, unknown>[];
   xKey: string;
   yKey: string;
   title: string;
@@ -60,7 +60,7 @@ export const TrendChart: React.FC<TrendChartProps> = ({
             />
             <Tooltip 
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-              formatter={(value: any) => [`₱ ${Number(value).toLocaleString()}`, "Value"]}
+              formatter={(value) => [`₱ ${Number(value ?? 0).toLocaleString()}`, "Value"]}
             />
             <Area
               type="monotone"
